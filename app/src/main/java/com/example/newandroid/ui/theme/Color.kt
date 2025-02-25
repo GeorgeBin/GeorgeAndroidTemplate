@@ -1,4 +1,4 @@
-package com.georgebindragon.learn.koalafdp1.ui.theme
+package com.example.newandroid.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

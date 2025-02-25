@@ -1,4 +1,4 @@
-package com.georgebindragon.learn.koalafdp1
+package com.example.newandroid
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,37 +11,37 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.georgebindragon.learn.koalafdp1.ui.theme.KoalaFDP1Theme
+import com.example.newandroid.ui.theme.NewAndroidTheme
 
 class MainActivity : ComponentActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    enableEdgeToEdge()
-    setContent {
-      KoalaFDP1Theme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-          Greeting(
-            name = "Android",
-            modifier = Modifier.padding(innerPadding)
-          )
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            NewAndroidTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
+            }
         }
-      }
     }
-  }
 }
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-  Text(
-    text = "Hello $name!",
-    modifier = modifier
-  )
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-  KoalaFDP1Theme {
-    Greeting("Android")
-  }
+    NewAndroidTheme {
+        Greeting("Android")
+    }
 }
