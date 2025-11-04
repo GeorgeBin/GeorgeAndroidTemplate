@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "GeorgeAndroidTemplate"
 include(":app")
+include(":corelib")
