@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- todo：应用名 -->
+    <string name="app_name">Demo</string>
+    <string name="content_title">内容区域</string>
+    <string name="content_subtitle">上半部分为可滚动内容区，底部固定展示应用名称、包名和版本号。</string>
+    <string name="section_title">内容模块 %1$d</string>
+    <string name="section_body">这里预留业务内容展示区域。后续可替换为列表、卡片、表单或其他页面主体内容，当前布局已支持纵向滚动。</string>
+    <string name="exit_app">退出应用</string>
+    <string name="restart_app">重启应用</string>
+
+
+</resources>

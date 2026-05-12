@@ -1,4 +1,6 @@
 pluginManagement {
+    includeBuild("build-logic")
+
     repositories {
         google {
             content {
@@ -9,8 +11,34 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        // 镜像
+        maven(url = "https://maven.aliyun.com/repository/gradle-plugin")
+        maven(url = "https://maven.aliyun.com/repository/public")
+        maven(url = "https://maven.aliyun.com/repository/google")
+        maven(url = "https://maven.aliyun.com/repository/central")
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            when (requested.id.id) {
+                "com.android.application", "com.android.library" -> {
+                    useModule("com.android.tools.build:gradle:${requested.version}")
+                }
+                "org.jetbrains.kotlin.android",
+                "org.jetbrains.kotlin.jvm" -> {
+                    useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
+                }
+                "org.jetbrains.kotlin.plugin.compose" -> {
+                    useModule("org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:${requested.version}")
+                }
+                "org.jetbrains.kotlin.plugin.serialization" -> {
+                    useModule("org.jetbrains.kotlin.plugin.serialization:org.jetbrains.kotlin.plugin.serialization.gradle.plugin:${requested.version}")
+                }
+            }
+        }
     }
 }
+
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
@@ -19,14 +47,21 @@ plugins {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        // 镜像
         maven(url = "https://maven.aliyun.com/repository/public")
         maven(url = "https://maven.aliyun.com/repository/google")
+        maven(url = "https://maven.aliyun.com/repository/central")
 
         google()
         mavenCentral()
     }
 }
 
+
+include(
+    ":app",
+    ":base:log",
+)
+
+
 rootProject.name = "Android：Template"  //todo：项目别名
-include(":app")
- 
