@@ -1,0 +1,156 @@
+# Android Template Architecture
+
+本文档定义本模板工程的模块分层、依赖方向和代码放置规则。目标是让工程能按 Now in Android 的模块化思路演进，同时保留本模板对基础能力、系统能力和 App 级共享能力的边界设计。
+
+## 分层目标
+
+工程按 `app`、`feature`、`core`、`base` 四层组织：
+
+- `base`：最底层、跨模块、低业务语义的基础能力。优先保持纯 Kotlin 或低 Android 依赖，不依赖 Android UI，不承载 App 业务语义。
+- `core`：App 级共享能力。可以包含 Android 能力、UI 基础能力、数据基础设施、App 级状态和跨 feature 的稳定抽象。
+- `feature`：具体页面、业务流程和用户可见功能入口。feature 可以组合 core 能力，但不沉淀通用基础设施。
+- `app`：尽量薄，只负责绑定整个代码库的组装层，包括 `Application`、`MainActivity`、顶层导航、依赖组装和启动入口。
+
+## 依赖规则
+
+默认依赖方向：
+
+```text
+app -> feature -> core -> base
+```
+
+约束规则：
+
+- `base` 不能依赖 `core`、`feature`、`app`。
+- `core` 不能依赖 `feature`、`app`。
+- `feature` 不能依赖 `app`，也不直接依赖其他 feature。
+- 同层模块默认不互相依赖；如果多个同层模块需要共享能力，优先下沉到更低层。
+- 跨 feature 跳转由 `app` 的顶层导航协调，或通过 `core` 中的抽象状态和协议间接协作。
+- 模块命名应表达职责，不表达实现细节；实现可以替换，模块边界应稳定。
+
+## 模块职责
+
+### app
+
+`app` 是最终应用的装配层，应保持薄且直接：
+
+- `Application`：初始化全局依赖、进程级能力和必要的启动任务。
+- `MainActivity`：承接 Android 启动入口、edge-to-edge、顶层 Compose 容器。
+- `NavHost` / 顶层导航：绑定 feature 入口，处理跨 feature 路由。
+- 依赖组装：在没有 DI 框架时负责创建根依赖；引入 Hilt 后负责安装根组件。
+- 全局启用入口：决定某个 core 能力或 feature 是否真正启用。
+
+`app` 不应放具体业务页面、通用 UI 组件、数据仓库实现或工具类。
+
+### base
+
+`base` 放最底层的基础能力，适合被任何模块复用：
+
+- `base:log`：日志基础能力，包括打印到 logcat、保存到文件、日志文件路径、文件命名、单文件大小、总日志大小等策略。日志的 UI 展示或 web 查看入口可以在更高层包装，底层写入和查询能力放在 base。
+- `base:error`：错误类型、错误包装、错误格式化等低业务语义能力。
+- `base:common`：纯 Kotlin 通用工具，例如时间、集合、字符串、纯 Kotlin 防抖器。
+- `base:coroutine`：协程调度器、Flow 工具、协程错误处理等通用能力。
+- `base:json`：JSON 序列化工具和基础适配。
+- `base:system`：系统工具类。只放系统签名、系统应用、Root 权限或特殊设备环境下才能使用的能力，并在 API 命名和文档中明确权限前置条件。
+
+`base` 应避免出现业务名词、页面概念、主题样式和 App 设置状态。
+
+### core
+
+`core` 放 App 级共享能力，是 feature 的主要依赖来源：
+
+- `core:model`：跨层共享的数据模型。
+- `core:data`：Repository、数据聚合和数据来源协调。
+- `core:network`：网络客户端、请求拦截、通用协议处理。
+- `core:database`：数据库、DAO、实体和迁移。
+- `core:datastore`：DataStore 存储、偏好状态持久化。
+- `core:permissions`：权限检查、权限状态抽象、权限请求协议。
+- `core:designsystem`：主题、颜色、字体、尺寸、内容缩放等设计系统。
+- `core:ui`：通用 UI 组件、Modifier、View 扩展、状态栏、焦点 UI。
+- `core:settings`：用户设置状态，例如主题、语言、缩放、专家模式。
+- `core:locale`：语言切换、Locale 解析和应用级语言状态。
+- `core:adaptive`：竖屏、横屏、平板、折叠屏等窗口和设备形态判断。
+- `core:input`：按键、遥控器、D-Pad、键盘输入抽象。
+- `core:localserver`：本地服务、调试服务或本机通信能力。
+
+`core` 可以包含 Android API 和 Compose 基础能力，但不能包含具体页面流程。只要一个能力描述的是“怎么展示某个具体页面”或“用户完成某个业务流程”，就应放到 `feature`。
+
+### feature
+
+`feature` 放具体用户功能：
+
+- `feature:home`：首页页面和首页业务流程。
+- `feature:settings`：设置页面本身，包括设置项列表、设置详情页和设置交互流程。
+- 其他 feature 按用户可见的功能边界拆分。
+
+feature 内部可以包含 screen、route、ViewModel、UI state 和该功能私有的 mapper。多个 feature 需要共享的组件、状态或模型，不能复制到每个 feature；应沉淀到 `core` 或 `base`。
+
+## 放置决策表
+
+| 内容 | 放置位置 | 原则 |
+| --- | --- | --- |
+| 打印日志、文件日志滚动策略 | `base:log` | 低业务语义，跨模块复用 |
+| 日志查看页面 | `feature:*` 或调试 feature | 是具体页面和用户流程 |
+| 通用错误包装 | `base:error` | 不依赖 App 语义 |
+| Repository 和数据聚合 | `core:data` | App 级共享数据能力 |
+| 数据库和迁移 | `core:database` | App 级基础设施 |
+| 主题、颜色、字体、尺寸 | `core:designsystem` | 全 App 统一设计语言 |
+| 通用 Compose 组件和 Modifier | `core:ui` | 多 feature 复用的 UI 能力 |
+| 主题、语言、缩放、专家模式状态 | `core:settings` | UI 配置状态是 App 级共享状态 |
+| 设置页面 | `feature:settings` | 页面和交互流程属于 feature |
+| 设置是否启用、入口放在哪里 | `app` | 顶层组装和导航决策 |
+| 语言切换能力 | `core:locale` | App 级共享能力 |
+| 平板、横竖屏、折叠屏判断 | `core:adaptive` | App 级适配判断 |
+| 按键、遥控器、D-Pad 抽象 | `core:input` | 跨页面输入协议 |
+| 系统签名或 Root 才能调用的工具 | `base:system` | 底层能力，但必须明确权限边界 |
+
+## UI 与设置分层
+
+UI 相关能力按三类拆分：
+
+- UI 能力放 `core:ui` 和 `core:designsystem`。
+- UI 配置状态放 `core:settings`。
+- UI 设置页面放 `feature:settings`。
+- 真正启用入口、顶层导航和全局绑定放 `app`。
+
+示例：主题切换能力的职责分配：
+
+- `core:designsystem` 定义主题、颜色、字体、尺寸和内容缩放如何作用于 UI。
+- `core:settings` 定义当前主题模式、语言、缩放、专家模式等状态，并负责持久化协议。
+- `feature:settings` 展示设置页面，允许用户修改主题和缩放。
+- `app` 读取设置状态，在顶层 `TemplateTheme` 或导航入口中真正启用。
+
+## 生命周期状态
+
+App 级状态按生命周期语义分为三类：
+
+- `App`：应用进程级状态，例如主题、语言、全局配置、初始化完成状态。
+- `Operator`：操作者环境状态，例如当前输入方式、权限状态、设备形态、调试开关。
+- `User`：用户身份和偏好状态，例如用户设置、专家模式、个性化配置。
+
+状态归属原则：
+
+- 跨 feature 使用的状态放 `core`。
+- 只服务单个页面流程的临时状态放对应 `feature`。
+- 决定全局是否启用某能力的状态由 `app` 消费和绑定，但状态定义不放在 `app`。
+
+## 当前工程状态与后续演进
+
+当前已存在模块：
+
+- `:app`：应用入口、顶层壳和 feature 组装。
+- `:base:log`：日志基础模块起点。
+- `:core:model`：共享模型。
+- `:core:data`：数据仓库抽象和当前静态数据实现。
+- `:core:designsystem`：Compose 主题和设计系统起点。
+- `:feature:home`：首页 feature。
+
+建议后续按需求逐步新增模块，不提前创建空模块：
+
+- 需要通用 UI 组件时，新增 `:core:ui`。
+- 需要主题、语言、缩放、专家模式等用户设置状态时，新增 `:core:settings`。
+- 需要设置页面时，新增 `:feature:settings`。
+- 需要语言切换能力时，新增 `:core:locale`。
+- 需要横竖屏、平板、折叠屏判断时，新增 `:core:adaptive`。
+- 需要 D-Pad、遥控器、键盘抽象时，新增 `:core:input`。
+- 需要系统签名、系统应用或 Root 能力时，新增 `:base:system`，并为每个 API 标明权限前置条件和失败行为。
