@@ -6,6 +6,6 @@ interface ThemeSettingsRepository {
     val themeMode: StateFlow<ThemeMode>
     val appScale: StateFlow<AppScale>
 
-    fun setThemeMode(mode: ThemeMode)
-    fun setAppScale(scale: AppScale)
+    suspend fun setThemeMode(mode: ThemeMode)
+    suspend fun setAppScale(scale: AppScale)
 }

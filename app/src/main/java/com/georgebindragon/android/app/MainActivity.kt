@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.georgebindragon.android.core.designsystem.theme.TemplateAppScale
@@ -15,6 +16,7 @@ import com.georgebindragon.android.core.designsystem.theme.TemplateThemeMode
 import com.georgebindragon.android.core.settings.AppScale
 import com.georgebindragon.android.core.settings.ThemeMode
 import com.jakewharton.processphoenix.ProcessPhoenix
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +25,7 @@ class MainActivity : ComponentActivity() {
         val packageName = applicationContext.packageName
         val versionName = packageManager.getPackageInfo(packageName, 0).versionName ?: "unknown"
         setContent {
+            val coroutineScope = rememberCoroutineScope()
             val themeMode by AppDependencies.themeSettingsRepository.themeMode.collectAsState()
             val appScale by AppDependencies.themeSettingsRepository.appScale.collectAsState()
 
@@ -35,9 +38,17 @@ class MainActivity : ComponentActivity() {
                     packageName = packageName,
                     versionName = versionName,
                     themeMode = themeMode,
-                    onThemeModeChange = AppDependencies.themeSettingsRepository::setThemeMode,
+                    onThemeModeChange = { mode ->
+                        coroutineScope.launch {
+                            AppDependencies.themeSettingsRepository.setThemeMode(mode)
+                        }
+                    },
                     appScale = appScale,
-                    onAppScaleChange = AppDependencies.themeSettingsRepository::setAppScale,
+                    onAppScaleChange = { scale ->
+                        coroutineScope.launch {
+                            AppDependencies.themeSettingsRepository.setAppScale(scale)
+                        }
+                    },
                     onExitClick = { finishAffinity() },
                     onRestartClick = { ProcessPhoenix.triggerRebirth(this) },
                     modifier = Modifier.fillMaxSize(),

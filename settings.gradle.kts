@@ -60,12 +60,17 @@ dependencyResolutionManagement {
 
 include(
     ":app",
+    ":base:io",
     ":base:log",
+    ":core:adaptive",
     ":core:data",
+    ":core:database",
+    ":core:datastore",
     ":core:designsystem",
     ":core:model",
     ":core:network",
     ":core:settings",
+    ":core:storage",
     ":feature:home",
     ":feature:settings",
 )
