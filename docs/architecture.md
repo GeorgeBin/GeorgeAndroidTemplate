@@ -65,7 +65,7 @@ app -> feature -> core -> base
 - `core:database`：数据库、DAO、实体和迁移。
 - `core:datastore`：DataStore 存储、偏好状态持久化。
 - `core:permissions`：权限检查、权限状态抽象、权限请求协议。
-- `core:designsystem`：主题、颜色、字体、尺寸、内容缩放等设计系统。
+- `core:designsystem`：主题、颜色、字体、尺寸、内容缩放、系统栏视觉策略等设计系统。
 - `core:ui`：通用 UI 组件、Modifier、View 扩展、状态栏、焦点 UI。
 - `core:settings`：用户设置状态，例如主题、语言、缩放、专家模式。
 - `core:locale`：语言切换、Locale 解析和应用级语言状态。
@@ -96,7 +96,7 @@ feature 内部可以包含 screen、route、ViewModel、UI state 和该功能私
 | Retrofit、OkHttp、JSON 和 HTTP 拦截器 | `core:network` 的 `http` 包 | HTTP 基础设施，不包含业务接口 |
 | TCP/UDP 连接、协议编解码和连接管理 | `core:network` 的 `tcp` / `udp` 包 | 有真实实现时再创建分包，复杂后再拆子模块 |
 | 数据库和迁移 | `core:database` | App 级基础设施 |
-| 主题、颜色、字体、尺寸 | `core:designsystem` | 全 App 统一设计语言 |
+| 主题、颜色、字体、尺寸、系统栏视觉策略 | `core:designsystem` | 全 App 统一设计语言；真正启用入口由 `app` 调用 |
 | 通用 Compose 组件和 Modifier | `core:ui` | 多 feature 复用的 UI 能力 |
 | 主题、语言、缩放、专家模式状态 | `core:settings` | UI 配置状态是 App 级共享状态 |
 | 设置页面 | `feature:settings` | 页面和交互流程属于 feature |
