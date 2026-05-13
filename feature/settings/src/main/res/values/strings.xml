@@ -1,0 +1,13 @@
+<resources>
+    <string name="settings_title">设置</string>
+    <string name="settings_theme_title">主题模式</string>
+    <string name="settings_theme_system">跟随系统</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_app_scale_title">内容大小</string>
+    <string name="settings_app_scale_small">小</string>
+    <string name="settings_app_scale_standard">标准</string>
+    <string name="settings_app_scale_large">大</string>
+    <string name="settings_app_scale_extra_large">特大</string>
+    <string name="settings_back_home">返回首页</string>
+</resources>

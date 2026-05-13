@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
@@ -24,10 +25,16 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun TemplateTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: TemplateThemeMode = TemplateThemeMode.System,
+    appScale: TemplateAppScale = TemplateAppScale.Standard,
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
+    val darkTheme = when (themeMode) {
+        TemplateThemeMode.System -> isSystemInDarkTheme()
+        TemplateThemeMode.Light -> false
+        TemplateThemeMode.Dark -> true
+    }
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -38,9 +45,26 @@ fun TemplateTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content,
-    )
+    CompositionLocalProvider(
+        LocalTemplateDimensions provides templateDimensions(appScale.scaleFactor),
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = templateTypography(appScale.scaleFactor),
+            content = content,
+        )
+    }
+}
+
+enum class TemplateThemeMode {
+    System,
+    Light,
+    Dark,
+}
+
+enum class TemplateAppScale(val scaleFactor: Float) {
+    Small(0.90f),
+    Standard(1.00f),
+    Large(1.15f),
+    ExtraLarge(1.30f),
 }

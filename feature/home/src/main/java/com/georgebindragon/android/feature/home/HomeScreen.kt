@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.georgebindragon.android.core.designsystem.theme.TemplateDimensions
 import com.georgebindragon.android.core.designsystem.theme.TemplateTheme
 import com.georgebindragon.android.core.model.HomeItem
 
@@ -38,15 +38,19 @@ internal fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
+    val dimensions = TemplateDimensions.current
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
-            .padding(horizontal = 20.dp, vertical = 4.dp)
+            .padding(
+                horizontal = dimensions.screenHorizontalPadding,
+                vertical = dimensions.screenVerticalPadding,
+            )
             .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(dimensions.contentSpacingSmall),
     ) {
         Text(
             text = stringResource(R.string.home_content_title),
@@ -65,7 +69,7 @@ internal fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 48.dp),
+                        .padding(vertical = dimensions.contentSpacingLarge),
                     contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator()
@@ -82,13 +86,13 @@ internal fun HomeScreen(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp),
+                .padding(top = dimensions.contentSpacingMedium),
         ) {
-            val buttonWidth = (maxWidth - 12.dp) / 2
+            val buttonWidth = (maxWidth - dimensions.contentSpacingMedium) / 2
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(dimensions.contentSpacingMedium),
             ) {
                 Button(
                     onClick = onExitClick,
@@ -113,15 +117,17 @@ private fun HomeItemCard(
     item: HomeItem,
     modifier: Modifier = Modifier,
 ) {
+    val dimensions = TemplateDimensions.current
+
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
-        tonalElevation = 3.dp,
+        shape = RoundedCornerShape(dimensions.cardCornerRadius),
+        tonalElevation = dimensions.cardElevation,
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(dimensions.cardPadding),
+            verticalArrangement = Arrangement.spacedBy(dimensions.cardContentSpacing),
         ) {
             Text(
                 text = item.title,

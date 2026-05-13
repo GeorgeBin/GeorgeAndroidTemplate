@@ -65,7 +65,9 @@ include(
     ":core:designsystem",
     ":core:model",
     ":core:network",
+    ":core:settings",
     ":feature:home",
+    ":feature:settings",
 )
 
 

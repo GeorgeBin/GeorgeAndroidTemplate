@@ -10,21 +10,35 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import com.georgebindragon.android.core.designsystem.theme.TemplateDimensions
+import com.georgebindragon.android.core.settings.AppScale
+import com.georgebindragon.android.core.settings.ThemeMode
 import com.georgebindragon.android.feature.home.HomeRoute
+import com.georgebindragon.android.feature.settings.SettingsRoute
 
 @Composable
 fun TemplateApp(
     appName: String,
     packageName: String,
     versionName: String,
+    themeMode: ThemeMode,
+    onThemeModeChange: (ThemeMode) -> Unit,
+    appScale: AppScale,
+    onAppScaleChange: (AppScale) -> Unit,
     onExitClick: () -> Unit,
     onRestartClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var currentScreen by rememberSaveable { mutableStateOf(TemplateScreen.Home) }
+
     Scaffold(
         modifier = modifier,
         bottomBar = {
@@ -32,10 +46,18 @@ fun TemplateApp(
                 appName = appName,
                 packageName = packageName,
                 versionName = versionName,
+                currentScreen = currentScreen,
+                onScreenChange = { currentScreen = it },
             )
         },
     ) { innerPadding ->
         TemplateNavHost(
+            currentScreen = currentScreen,
+            themeMode = themeMode,
+            onThemeModeChange = onThemeModeChange,
+            appScale = appScale,
+            onAppScaleChange = onAppScaleChange,
+            onBackHomeClick = { currentScreen = TemplateScreen.Home },
             onExitClick = onExitClick,
             onRestartClick = onRestartClick,
             modifier = Modifier.padding(innerPadding),
@@ -45,15 +67,32 @@ fun TemplateApp(
 
 @Composable
 private fun TemplateNavHost(
+    currentScreen: TemplateScreen,
+    themeMode: ThemeMode,
+    onThemeModeChange: (ThemeMode) -> Unit,
+    appScale: AppScale,
+    onAppScaleChange: (AppScale) -> Unit,
+    onBackHomeClick: () -> Unit,
     onExitClick: () -> Unit,
     onRestartClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    HomeRoute(
-        onExitClick = onExitClick,
-        onRestartClick = onRestartClick,
-        modifier = modifier,
-    )
+    when (currentScreen) {
+        TemplateScreen.Home -> HomeRoute(
+            onExitClick = onExitClick,
+            onRestartClick = onRestartClick,
+            modifier = modifier,
+        )
+
+        TemplateScreen.Settings -> SettingsRoute(
+            themeMode = themeMode,
+            onThemeModeChange = onThemeModeChange,
+            appScale = appScale,
+            onAppScaleChange = onAppScaleChange,
+            onBackHomeClick = onBackHomeClick,
+            modifier = modifier,
+        )
+    }
 }
 
 @Composable
@@ -61,12 +100,16 @@ private fun AppFooter(
     appName: String,
     packageName: String,
     versionName: String,
+    currentScreen: TemplateScreen,
+    onScreenChange: (TemplateScreen) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val dimensions = TemplateDimensions.current
+
     Surface(
         modifier = modifier.fillMaxWidth(),
-        tonalElevation = 8.dp,
-        shadowElevation = 8.dp,
+        tonalElevation = dimensions.footerElevation,
+        shadowElevation = dimensions.footerElevation,
     ) {
         Column(
             modifier = Modifier
@@ -77,7 +120,27 @@ private fun AppFooter(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 2.dp),
+                    .padding(
+                        horizontal = dimensions.footerNavHorizontalPadding,
+                        vertical = dimensions.footerVerticalPadding,
+                    ),
+            ) {
+                TemplateScreen.entries.forEach { screen ->
+                    TextButton(
+                        onClick = { onScreenChange(screen) },
+                        enabled = screen != currentScreen,
+                    ) {
+                        Text(text = screen.label)
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = dimensions.footerInfoHorizontalPadding,
+                        vertical = dimensions.footerVerticalPadding,
+                    ),
             ) {
                 Text(
                     text = appName,
@@ -95,4 +158,9 @@ private fun AppFooter(
             }
         }
     }
+}
+
+private enum class TemplateScreen(val label: String) {
+    Home("首页"),
+    Settings("设置"),
 }

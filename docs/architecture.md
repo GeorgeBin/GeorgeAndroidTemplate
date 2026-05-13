@@ -65,7 +65,7 @@ app -> feature -> core -> base
 - `core:database`：数据库、DAO、实体和迁移。
 - `core:datastore`：DataStore 存储、偏好状态持久化。
 - `core:permissions`：权限检查、权限状态抽象、权限请求协议。
-- `core:designsystem`：主题、颜色、字体、尺寸、内容缩放、系统栏视觉策略等设计系统。
+- `core:designsystem`：主题、颜色、字体、间距、组件尺寸、内容缩放、系统栏视觉策略等设计系统。
 - `core:ui`：通用 UI 组件、Modifier、View 扩展、状态栏、焦点 UI。
 - `core:settings`：用户设置状态，例如主题、语言、缩放、专家模式。
 - `core:locale`：语言切换、Locale 解析和应用级语言状态。
@@ -96,7 +96,7 @@ feature 内部可以包含 screen、route、ViewModel、UI state 和该功能私
 | Retrofit、OkHttp、JSON 和 HTTP 拦截器 | `core:network` 的 `http` 包 | HTTP 基础设施，不包含业务接口 |
 | TCP/UDP 连接、协议编解码和连接管理 | `core:network` 的 `tcp` / `udp` 包 | 有真实实现时再创建分包，复杂后再拆子模块 |
 | 数据库和迁移 | `core:database` | App 级基础设施 |
-| 主题、颜色、字体、尺寸、系统栏视觉策略 | `core:designsystem` | 全 App 统一设计语言；真正启用入口由 `app` 调用 |
+| 主题、颜色、字体、间距、组件尺寸、系统栏视觉策略 | `core:designsystem` | 全 App 统一设计语言；字体、间距和组件尺寸统一受 AppScale 控制 |
 | 通用 Compose 组件和 Modifier | `core:ui` | 多 feature 复用的 UI 能力 |
 | 主题、语言、缩放、专家模式状态 | `core:settings` | UI 配置状态是 App 级共享状态 |
 | 设置页面 | `feature:settings` | 页面和交互流程属于 feature |
@@ -118,8 +118,8 @@ UI 相关能力按三类拆分：
 示例：主题切换能力的职责分配：
 
 - `core:designsystem` 定义主题、颜色、字体、尺寸和内容缩放如何作用于 UI。
-- `core:settings` 定义当前主题模式、语言、缩放、专家模式等状态，并负责持久化协议。
-- `feature:settings` 展示设置页面，允许用户修改主题和缩放。
+- `core:settings` 定义当前主题模式、AppScale、语言、缩放、专家模式等状态；当前主题和 AppScale 选择为运行期内存态，后续需要时再接持久化协议。
+- `feature:settings` 展示设置页面，允许用户修改主题和 AppScale。
 - `app` 读取设置状态，在顶层 `TemplateTheme` 或导航入口中真正启用。
 
 ## 生命周期状态
@@ -146,13 +146,14 @@ App 级状态按生命周期语义分为三类：
 - `:core:data`：数据仓库抽象和当前静态数据实现。
 - `:core:designsystem`：Compose 主题和设计系统起点。
 - `:core:network`：网络基础设施聚合模块，当前 HTTP 能力放在 `http` 包下。
+- `:core:settings`：用户设置状态起点，当前主题和 AppScale 选择为运行期内存态。
 - `:feature:home`：首页 feature。
+- `:feature:settings`：设置页面起点，当前提供主题切换。
 
 建议后续按需求逐步新增模块，不提前创建空模块：
 
 - 需要通用 UI 组件时，新增 `:core:ui`。
-- 需要主题、语言、缩放、专家模式等用户设置状态时，新增 `:core:settings`。
-- 需要设置页面时，新增 `:feature:settings`。
+- 需要主题或 AppScale 选择持久化时，将 `:core:settings` 的内存实现替换或扩展为 DataStore 实现。
 - 需要语言切换能力时，新增 `:core:locale`。
 - 需要横竖屏、平板、折叠屏判断时，新增 `:core:adaptive`。
 - 需要 D-Pad、遥控器、键盘抽象时，新增 `:core:input`。
