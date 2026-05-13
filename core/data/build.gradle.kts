@@ -8,5 +8,6 @@ android {
 
 dependencies {
     implementation(project(":core:model"))
+    implementation(project(":core:network"))
     implementation(libs.kotlinx.coroutines.core)
 }

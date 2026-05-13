@@ -7,7 +7,7 @@
 工程按 `app`、`feature`、`core`、`base` 四层组织：
 
 - `base`：最底层、跨模块、低业务语义的基础能力。优先保持纯 Kotlin 或低 Android 依赖，不依赖 Android UI，不承载 App 业务语义。
-- `core`：App 级共享能力。可以包含 Android 能力、UI 基础能力、数据基础设施、App 级状态和跨 feature 的稳定抽象。
+- `core`：App 级共享能力。可以包含 Android 能力、UI 基础能力、数据基础设施、网络基础设施、App 级状态和跨 feature 的稳定抽象。
 - `feature`：具体页面、业务流程和用户可见功能入口。feature 可以组合 core 能力，但不沉淀通用基础设施。
 - `app`：尽量薄，只负责绑定整个代码库的组装层，包括 `Application`、`MainActivity`、顶层导航、依赖组装和启动入口。
 
@@ -60,8 +60,8 @@ app -> feature -> core -> base
 `core` 放 App 级共享能力，是 feature 的主要依赖来源：
 
 - `core:model`：跨层共享的数据模型。
-- `core:data`：Repository、数据聚合和数据来源协调。
-- `core:network`：网络客户端、请求拦截、通用协议处理。
+- `core:data`：Repository、数据聚合、具体业务 API、DTO 和数据来源协调。
+- `core:network`：网络客户端、请求拦截、通用协议处理，以及 Retrofit、OkHttp、JSON 序列化等网络基础设施封装。
 - `core:database`：数据库、DAO、实体和迁移。
 - `core:datastore`：DataStore 存储、偏好状态持久化。
 - `core:permissions`：权限检查、权限状态抽象、权限请求协议。
@@ -92,7 +92,8 @@ feature 内部可以包含 screen、route、ViewModel、UI state 和该功能私
 | 打印日志、文件日志滚动策略 | `base:log` | 低业务语义，跨模块复用 |
 | 日志查看页面 | `feature:*` 或调试 feature | 是具体页面和用户流程 |
 | 通用错误包装 | `base:error` | 不依赖 App 语义 |
-| Repository 和数据聚合 | `core:data` | App 级共享数据能力 |
+| Repository、业务 API、DTO 和数据聚合 | `core:data` | App 级共享数据能力 |
+| Retrofit、OkHttp、JSON 和通用拦截器 | `core:network` | 网络基础设施，不包含业务接口 |
 | 数据库和迁移 | `core:database` | App 级基础设施 |
 | 主题、颜色、字体、尺寸 | `core:designsystem` | 全 App 统一设计语言 |
 | 通用 Compose 组件和 Modifier | `core:ui` | 多 feature 复用的 UI 能力 |
@@ -143,6 +144,7 @@ App 级状态按生命周期语义分为三类：
 - `:core:model`：共享模型。
 - `:core:data`：数据仓库抽象和当前静态数据实现。
 - `:core:designsystem`：Compose 主题和设计系统起点。
+- `:core:network`：Retrofit、OkHttp 和 kotlinx.serialization 网络基础设施。
 - `:feature:home`：首页 feature。
 
 建议后续按需求逐步新增模块，不提前创建空模块：
