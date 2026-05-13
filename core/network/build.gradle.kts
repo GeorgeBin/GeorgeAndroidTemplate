@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.demo.infra.d.template.core.network"
+    namespace = "com.georgebindragon.android.core.network"
 }
 
 dependencies {

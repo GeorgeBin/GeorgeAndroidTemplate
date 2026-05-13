@@ -22,7 +22,7 @@ val signingKeyPassword = providers.gradleProperty("signing.keyPassword").orElse(
 val signingStorePassword = providers.gradleProperty("signing.storePassword").orElse("androidsystem")
 
 android {
-    namespace = "com.demo.infra.d.template"
+    namespace = "com.georgebindragon.android.app"
 
     defaultConfig {
         ndk {

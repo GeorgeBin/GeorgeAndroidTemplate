@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.demo.infra.d.template.feature.home"
+    namespace = "com.georgebindragon.android.feature.home"
 }
 
 dependencies {

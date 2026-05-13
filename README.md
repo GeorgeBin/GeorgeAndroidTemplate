@@ -35,7 +35,7 @@ rootProject.name = "InfraD_Template"
 文件：app/build.gradle.kts
 
 ```kotlin
-applicationId = "com.demo.infra.d.template"
+applicationId = "com.georgebindragon.android.app"
 // 修改为你的正式包名，例如：
 applicationId = "com.demo.xxx"
 ```

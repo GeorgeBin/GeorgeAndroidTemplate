@@ -3,5 +3,5 @@ plugins {
 }
 
 android {
-    namespace = "com.demo.infra.d.template.core.designsystem"
+    namespace = "com.georgebindragon.android.core.designsystem"
 }
