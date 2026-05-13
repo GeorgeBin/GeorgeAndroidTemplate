@@ -1,5 +1,19 @@
 # Android 模板工程
 
+Android Studio 版本：Android Studio Panda
+
+ndk：
+
+Java：
+
+gradle：gradle-9.2.1-bin
+
+Kotlin：
+
+minSdk：
+
+targetSdk：
+
 
 
 ## 必改项

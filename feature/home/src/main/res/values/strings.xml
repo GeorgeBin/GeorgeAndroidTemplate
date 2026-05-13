@@ -1,0 +1,6 @@
+<resources>
+    <string name="home_content_title">内容区域</string>
+    <string name="home_content_subtitle">上半部分为可滚动内容区，底部固定展示应用名称、包名和版本号。</string>
+    <string name="home_exit_app">退出应用</string>
+    <string name="home_restart_app">重启应用</string>
+</resources>

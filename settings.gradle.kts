@@ -61,6 +61,10 @@ dependencyResolutionManagement {
 include(
     ":app",
     ":base:log",
+    ":core:data",
+    ":core:designsystem",
+    ":core:model",
+    ":feature:home",
 )
 
 
