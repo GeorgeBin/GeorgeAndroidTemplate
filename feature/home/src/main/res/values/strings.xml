@@ -1,6 +1,8 @@
 <resources>
     <string name="home_content_title">内容区域</string>
     <string name="home_content_subtitle">上半部分为可滚动内容区，底部固定展示应用名称、包名和版本号。</string>
+    <string name="home_section_title">内容模块 %1$d</string>
+    <string name="home_section_body">这里预留业务内容展示区域。后续可替换为列表、卡片、表单或其他页面主体内容，当前布局已支持纵向滚动。</string>
     <string name="home_exit_app">退出应用</string>
     <string name="home_restart_app">重启应用</string>
 </resources>

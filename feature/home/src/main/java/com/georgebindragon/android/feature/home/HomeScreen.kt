@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -28,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.georgebindragon.android.core.designsystem.theme.TemplateDimensions
 import com.georgebindragon.android.core.designsystem.theme.TemplateTheme
 import com.georgebindragon.android.core.model.HomeItem
+import com.georgebindragon.android.core.ui.component.FocusableButton
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -77,8 +77,8 @@ internal fun HomeScreen(
             }
 
             is HomeUiState.Success -> {
-                uiState.items.forEach { item ->
-                    HomeItemCard(item = item)
+                uiState.items.forEachIndexed { index, _ ->
+                    HomeItemCard(sectionNumber = index + 1)
                 }
             }
         }
@@ -94,14 +94,14 @@ internal fun HomeScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(dimensions.contentSpacingMedium),
             ) {
-                Button(
+                FocusableButton(
                     onClick = onExitClick,
                     modifier = Modifier.width(buttonWidth),
                 ) {
                     Text(text = stringResource(R.string.home_exit_app))
                 }
 
-                Button(
+                FocusableButton(
                     onClick = onRestartClick,
                     modifier = Modifier.width(buttonWidth),
                 ) {
@@ -114,7 +114,7 @@ internal fun HomeScreen(
 
 @Composable
 private fun HomeItemCard(
-    item: HomeItem,
+    sectionNumber: Int,
     modifier: Modifier = Modifier,
 ) {
     val dimensions = TemplateDimensions.current
@@ -130,12 +130,12 @@ private fun HomeItemCard(
             verticalArrangement = Arrangement.spacedBy(dimensions.cardContentSpacing),
         ) {
             Text(
-                text = item.title,
+                text = stringResource(R.string.home_section_title, sectionNumber),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                text = item.body,
+                text = stringResource(R.string.home_section_body),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

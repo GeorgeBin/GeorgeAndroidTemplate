@@ -1,0 +1,8 @@
+<resources>
+    <string name="home_content_title">Content</string>
+    <string name="home_content_subtitle">The top area is scrollable content, and the bottom stays fixed with the app name, package name, and version.</string>
+    <string name="home_section_title">Content module %1$d</string>
+    <string name="home_section_body">This area is reserved for business content. It can later become a list, cards, forms, or another main page body, and the current layout already supports vertical scrolling.</string>
+    <string name="home_exit_app">Exit app</string>
+    <string name="home_restart_app">Restart app</string>
+</resources>
