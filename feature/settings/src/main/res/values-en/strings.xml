@@ -1,0 +1,28 @@
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_expert_mode_title">Expert mode</string>
+    <string name="settings_theme_title">Theme mode</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_app_scale_title">Content size</string>
+    <string name="settings_app_scale_small">Small</string>
+    <string name="settings_app_scale_standard">Standard</string>
+    <string name="settings_app_scale_large">Large</string>
+    <string name="settings_app_scale_extra_large">Extra large</string>
+    <string name="settings_page_orientation_title">Page orientation</string>
+    <string name="settings_page_orientation_system">System</string>
+    <string name="settings_page_orientation_0">0</string>
+    <string name="settings_page_orientation_90">90</string>
+    <string name="settings_page_orientation_180">180</string>
+    <string name="settings_page_orientation_270">270</string>
+    <string name="settings_interaction_mode_title">Interaction mode</string>
+    <string name="settings_interaction_mode_auto">Auto</string>
+    <string name="settings_interaction_mode_touch">Touch</string>
+    <string name="settings_interaction_mode_remote">Remote</string>
+    <string name="settings_language_title">Language</string>
+    <string name="settings_language_system">System</string>
+    <string name="settings_language_simplified_chinese">Simplified Chinese</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_back_home">Back home</string>
+</resources>
