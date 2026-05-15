@@ -21,12 +21,29 @@ class DataStoreThemeSettingsRepository(
         .map { value -> value.toAppScaleOrDefault() }
         .stateIn(scope, SharingStarted.Eagerly, AppScale.Standard)
 
+    override val pageOrientation: StateFlow<PageOrientation> = keyValueStore
+        .observeString(KEY_PAGE_ORIENTATION, PageOrientation.System.name)
+        .map { value -> value.toPageOrientationOrDefault() }
+        .stateIn(scope, SharingStarted.Eagerly, PageOrientation.System)
+
+    override val expertMode: StateFlow<Boolean> = keyValueStore
+        .observeBoolean(KEY_EXPERT_MODE, false)
+        .stateIn(scope, SharingStarted.Eagerly, false)
+
     override suspend fun setThemeMode(mode: ThemeMode) {
         keyValueStore.putString(KEY_THEME_MODE, mode.name)
     }
 
     override suspend fun setAppScale(scale: AppScale) {
         keyValueStore.putString(KEY_APP_SCALE, scale.name)
+    }
+
+    override suspend fun setPageOrientation(orientation: PageOrientation) {
+        keyValueStore.putString(KEY_PAGE_ORIENTATION, orientation.name)
+    }
+
+    override suspend fun setExpertMode(enabled: Boolean) {
+        keyValueStore.putBoolean(KEY_EXPERT_MODE, enabled)
     }
 
     private fun String?.toThemeModeOrDefault(): ThemeMode {
@@ -37,6 +54,10 @@ class DataStoreThemeSettingsRepository(
         return enumValueOrNull<AppScale>(this) ?: AppScale.Standard
     }
 
+    private fun String?.toPageOrientationOrDefault(): PageOrientation {
+        return enumValueOrNull<PageOrientation>(this) ?: PageOrientation.System
+    }
+
     private inline fun <reified T : Enum<T>> enumValueOrNull(value: String?): T? {
         if (value == null) return null
         return runCatching { enumValueOf<T>(value) }.getOrNull()
@@ -45,5 +66,7 @@ class DataStoreThemeSettingsRepository(
     private companion object {
         const val KEY_THEME_MODE = "theme_mode"
         const val KEY_APP_SCALE = "app_scale"
+        const val KEY_PAGE_ORIENTATION = "page_orientation"
+        const val KEY_EXPERT_MODE = "expert_mode"
     }
 }

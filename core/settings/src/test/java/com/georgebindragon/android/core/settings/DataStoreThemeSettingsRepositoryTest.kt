@@ -11,7 +11,7 @@ import org.junit.Test
 
 class DataStoreThemeSettingsRepositoryTest {
     @Test
-    fun defaultsToSystemThemeAndStandardScale() = runTest {
+    fun defaultsToSystemThemeStandardScaleSystemPageOrientationAndExpertModeOff() = runTest {
         val repository = DataStoreThemeSettingsRepository(
             keyValueStore = InMemoryKeyValueStore(),
             scope = backgroundScope,
@@ -19,10 +19,12 @@ class DataStoreThemeSettingsRepositoryTest {
 
         assertEquals(ThemeMode.System, repository.themeMode.value)
         assertEquals(AppScale.Standard, repository.appScale.value)
+        assertEquals(PageOrientation.System, repository.pageOrientation.value)
+        assertEquals(false, repository.expertMode.value)
     }
 
     @Test
-    fun writesThemeModeAndAppScale() = runTest {
+    fun writesThemeModeAppScalePageOrientationAndExpertMode() = runTest {
         val repository = DataStoreThemeSettingsRepository(
             keyValueStore = InMemoryKeyValueStore(),
             scope = backgroundScope,
@@ -30,9 +32,16 @@ class DataStoreThemeSettingsRepositoryTest {
 
         repository.setThemeMode(ThemeMode.Dark)
         repository.setAppScale(AppScale.ExtraLarge)
+        repository.setPageOrientation(PageOrientation.Rotation90)
+        repository.setExpertMode(true)
 
         assertEquals(ThemeMode.Dark, repository.themeMode.first { it == ThemeMode.Dark })
         assertEquals(AppScale.ExtraLarge, repository.appScale.first { it == AppScale.ExtraLarge })
+        assertEquals(
+            PageOrientation.Rotation90,
+            repository.pageOrientation.first { it == PageOrientation.Rotation90 },
+        )
+        assertEquals(true, repository.expertMode.first { it })
     }
 
     @Test
@@ -46,6 +55,14 @@ class DataStoreThemeSettingsRepositoryTest {
             keyValueStore = store,
             scope = backgroundScope,
         ).setAppScale(AppScale.Large)
+        DataStoreThemeSettingsRepository(
+            keyValueStore = store,
+            scope = backgroundScope,
+        ).setPageOrientation(PageOrientation.Rotation270)
+        DataStoreThemeSettingsRepository(
+            keyValueStore = store,
+            scope = backgroundScope,
+        ).setExpertMode(true)
 
         val recreatedRepository = DataStoreThemeSettingsRepository(
             keyValueStore = store,
@@ -54,6 +71,11 @@ class DataStoreThemeSettingsRepositoryTest {
 
         assertEquals(ThemeMode.Light, recreatedRepository.themeMode.first { it == ThemeMode.Light })
         assertEquals(AppScale.Large, recreatedRepository.appScale.first { it == AppScale.Large })
+        assertEquals(
+            PageOrientation.Rotation270,
+            recreatedRepository.pageOrientation.first { it == PageOrientation.Rotation270 },
+        )
+        assertEquals(true, recreatedRepository.expertMode.first { it })
     }
 
     @Test
@@ -61,6 +83,7 @@ class DataStoreThemeSettingsRepositoryTest {
         val store = InMemoryKeyValueStore()
         store.putString("theme_mode", "Amoled")
         store.putString("app_scale", "Huge")
+        store.putString("page_orientation", "Diagonal")
 
         val repository = DataStoreThemeSettingsRepository(
             keyValueStore = store,
@@ -69,6 +92,7 @@ class DataStoreThemeSettingsRepositoryTest {
 
         assertEquals(ThemeMode.System, repository.themeMode.value)
         assertEquals(AppScale.Standard, repository.appScale.value)
+        assertEquals(PageOrientation.System, repository.pageOrientation.value)
     }
 }
 
