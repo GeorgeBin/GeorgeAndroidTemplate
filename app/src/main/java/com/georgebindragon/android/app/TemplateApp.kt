@@ -10,19 +10,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.georgebindragon.android.core.designsystem.theme.TemplateDimensions
+import com.georgebindragon.android.core.input.focus.AppInteractionMode
+import com.georgebindragon.android.core.locale.AppLanguage
 import com.georgebindragon.android.core.settings.AppScale
+import com.georgebindragon.android.core.settings.PageOrientation
 import com.georgebindragon.android.core.settings.ThemeMode
 import com.georgebindragon.android.feature.home.HomeRoute
 import com.georgebindragon.android.feature.settings.SettingsRoute
+import com.georgebindragon.android.core.ui.component.FocusableTextButton
+import com.georgebindragon.android.core.ui.focus.ProvideAppInteractionMode
 
 @Composable
 fun TemplateApp(
@@ -33,35 +38,55 @@ fun TemplateApp(
     onThemeModeChange: (ThemeMode) -> Unit,
     appScale: AppScale,
     onAppScaleChange: (AppScale) -> Unit,
+    pageOrientation: PageOrientation,
+    onPageOrientationChange: (PageOrientation) -> Unit,
+    expertMode: Boolean,
+    onExpertModeChange: (Boolean) -> Unit,
+    interactionMode: AppInteractionMode,
+    onInteractionModeChange: (AppInteractionMode) -> Unit,
+    supportedLanguages: List<AppLanguage>,
+    language: AppLanguage,
+    onLanguageChange: (AppLanguage) -> Unit,
     onExitClick: () -> Unit,
     onRestartClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var currentScreen by rememberSaveable { mutableStateOf(TemplateScreen.Home) }
 
-    Scaffold(
-        modifier = modifier,
-        bottomBar = {
-            AppFooter(
-                appName = appName,
-                packageName = packageName,
-                versionName = versionName,
+    ProvideAppInteractionMode(mode = interactionMode) {
+        Scaffold(
+            modifier = modifier,
+            bottomBar = {
+                AppFooter(
+                    appName = appName,
+                    packageName = packageName,
+                    versionName = versionName,
+                    currentScreen = currentScreen,
+                    onScreenChange = { currentScreen = it },
+                )
+            },
+        ) { innerPadding ->
+            TemplateNavHost(
                 currentScreen = currentScreen,
-                onScreenChange = { currentScreen = it },
+                themeMode = themeMode,
+                onThemeModeChange = onThemeModeChange,
+                appScale = appScale,
+                onAppScaleChange = onAppScaleChange,
+                pageOrientation = pageOrientation,
+                onPageOrientationChange = onPageOrientationChange,
+                expertMode = expertMode,
+                onExpertModeChange = onExpertModeChange,
+                interactionMode = interactionMode,
+                onInteractionModeChange = onInteractionModeChange,
+                supportedLanguages = supportedLanguages,
+                language = language,
+                onLanguageChange = onLanguageChange,
+                onBackHomeClick = { currentScreen = TemplateScreen.Home },
+                onExitClick = onExitClick,
+                onRestartClick = onRestartClick,
+                modifier = Modifier.padding(innerPadding),
             )
-        },
-    ) { innerPadding ->
-        TemplateNavHost(
-            currentScreen = currentScreen,
-            themeMode = themeMode,
-            onThemeModeChange = onThemeModeChange,
-            appScale = appScale,
-            onAppScaleChange = onAppScaleChange,
-            onBackHomeClick = { currentScreen = TemplateScreen.Home },
-            onExitClick = onExitClick,
-            onRestartClick = onRestartClick,
-            modifier = Modifier.padding(innerPadding),
-        )
+        }
     }
 }
 
@@ -72,6 +97,15 @@ private fun TemplateNavHost(
     onThemeModeChange: (ThemeMode) -> Unit,
     appScale: AppScale,
     onAppScaleChange: (AppScale) -> Unit,
+    pageOrientation: PageOrientation,
+    onPageOrientationChange: (PageOrientation) -> Unit,
+    expertMode: Boolean,
+    onExpertModeChange: (Boolean) -> Unit,
+    interactionMode: AppInteractionMode,
+    onInteractionModeChange: (AppInteractionMode) -> Unit,
+    supportedLanguages: List<AppLanguage>,
+    language: AppLanguage,
+    onLanguageChange: (AppLanguage) -> Unit,
     onBackHomeClick: () -> Unit,
     onExitClick: () -> Unit,
     onRestartClick: () -> Unit,
@@ -89,6 +123,15 @@ private fun TemplateNavHost(
             onThemeModeChange = onThemeModeChange,
             appScale = appScale,
             onAppScaleChange = onAppScaleChange,
+            pageOrientation = pageOrientation,
+            onPageOrientationChange = onPageOrientationChange,
+            expertMode = expertMode,
+            onExpertModeChange = onExpertModeChange,
+            interactionMode = interactionMode,
+            onInteractionModeChange = onInteractionModeChange,
+            supportedLanguages = supportedLanguages,
+            language = language,
+            onLanguageChange = onLanguageChange,
             onBackHomeClick = onBackHomeClick,
             modifier = modifier,
         )
@@ -126,11 +169,11 @@ private fun AppFooter(
                     ),
             ) {
                 TemplateScreen.entries.forEach { screen ->
-                    TextButton(
+                    FocusableTextButton(
                         onClick = { onScreenChange(screen) },
                         enabled = screen != currentScreen,
                     ) {
-                        Text(text = screen.label)
+                        Text(text = screen.label())
                     }
                 }
             }
@@ -160,7 +203,13 @@ private fun AppFooter(
     }
 }
 
-private enum class TemplateScreen(val label: String) {
-    Home("首页"),
-    Settings("设置"),
+@Composable
+private fun TemplateScreen.label(): String = when (this) {
+    TemplateScreen.Home -> stringResource(R.string.nav_home)
+    TemplateScreen.Settings -> stringResource(R.string.nav_settings)
+}
+
+private enum class TemplateScreen {
+    Home,
+    Settings,
 }

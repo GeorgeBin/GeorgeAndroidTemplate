@@ -67,10 +67,13 @@ include(
     ":core:database",
     ":core:datastore",
     ":core:designsystem",
+    ":core:input",
+    ":core:locale",
     ":core:model",
     ":core:network",
     ":core:settings",
     ":core:storage",
+    ":core:ui",
     ":feature:home",
     ":feature:settings",
 )

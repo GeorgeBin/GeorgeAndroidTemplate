@@ -24,6 +24,10 @@ val signingStorePassword = providers.gradleProperty("signing.storePassword").orE
 android {
     namespace = "com.georgebindragon.android.app"
 
+    androidResources {
+        generateLocaleConfig = true
+    }
+
     defaultConfig {
         ndk {
             // noinspection ChromeOsAbiSupport
@@ -65,10 +69,14 @@ android {
 dependencies {
     implementation(project(":core:datastore"))
     implementation(project(":core:designsystem"))
+    implementation(project(":core:input"))
+    implementation(project(":core:locale"))
     implementation(project(":core:settings"))
+    implementation(project(":core:ui"))
     implementation(project(":feature:home"))
     implementation(project(":feature:settings"))
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.process.phoenix)
