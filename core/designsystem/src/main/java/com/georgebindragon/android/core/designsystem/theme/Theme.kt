@@ -10,6 +10,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import com.georgebindragon.android.core.designsystem.focus.LocalTemplateFocusStyle
+import com.georgebindragon.android.core.designsystem.focus.templateFocusStyle
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -47,6 +49,10 @@ fun TemplateTheme(
 
     CompositionLocalProvider(
         LocalTemplateDimensions provides templateDimensions(appScale.scaleFactor),
+        LocalTemplateFocusStyle provides templateFocusStyle(
+            scale = appScale.scaleFactor,
+            borderColor = colorScheme.primary,
+        ),
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
