@@ -63,6 +63,7 @@ include(
     ":base:crash",
     ":base:io",
     ":base:log",
+    ":base:security",
     ":core:adaptive",
     ":core:data",
     ":core:database",
