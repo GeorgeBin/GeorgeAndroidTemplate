@@ -64,6 +64,7 @@ include(
     ":base:io",
     ":base:log",
     ":base:security",
+    ":base:time",
     ":core:adaptive",
     ":core:data",
     ":core:database",
