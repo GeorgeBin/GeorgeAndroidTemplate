@@ -67,6 +67,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":base:crash"))
+    implementation(project(":base:log"))
     implementation(project(":core:datastore"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:input"))

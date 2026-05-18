@@ -198,3 +198,10 @@ App 级状态按生命周期语义分为三类：
 - `http` 放 Retrofit、OkHttp、kotlinx.serialization converter、HTTP 拦截器等能力。
 - `tcp`、`udp` 只在出现真实 socket、协议编解码或连接管理需求时创建，不提前放空包。
 - 任一协议能力变复杂、依赖变重或需要独立测试/发布时，再拆成 `:core:network:http`、`:core:network:tcp`、`:core:network:udp` 等子模块。
+
+
+参考：
+
+https://github.com/android/nowinandroid
+
+https://github.com/cgspine/emo-public

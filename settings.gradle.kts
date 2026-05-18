@@ -60,6 +60,7 @@ dependencyResolutionManagement {
 
 include(
     ":app",
+    ":base:crash",
     ":base:io",
     ":base:log",
     ":core:adaptive",
