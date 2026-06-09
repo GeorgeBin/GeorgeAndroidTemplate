@@ -3,15 +3,14 @@ plugins {
 }
 
 android {
-    namespace = "com.georgebindragon.android.feature.settings"
+    namespace = "com.georgebindragon.android.feature.main"
 }
 
 dependencies {
+    implementation(project(":base:common"))
+    implementation(project(":core:appconfig"))
     implementation(project(":core:designsystem"))
-    implementation(project(":core:input"))
-    implementation(project(":core:locale"))
     implementation(project(":core:navigation"))
-    implementation(project(":core:settings"))
     implementation(project(":core:ui"))
     implementation(libs.androidx.navigation.compose)
 }

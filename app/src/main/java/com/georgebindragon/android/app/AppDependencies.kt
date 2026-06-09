@@ -1,6 +1,8 @@
 package com.georgebindragon.android.app
 
 import android.content.Context
+import com.georgebindragon.android.core.appconfig.AppConfigProvider
+import com.georgebindragon.android.core.appconfig.DefaultAppConfigProvider
 import com.georgebindragon.android.core.datastore.KeyValueStore
 import com.georgebindragon.android.core.datastore.PreferencesKeyValueStore
 import com.georgebindragon.android.core.input.focus.DataStoreInteractionModeManager
@@ -35,8 +37,12 @@ object AppDependencies {
     lateinit var setAppLanguageUseCase: SetAppLanguageUseCase
         private set
 
+    lateinit var appConfigProvider: AppConfigProvider
+        private set
+
     fun init(context: Context) {
         keyValueStore = PreferencesKeyValueStore(context)
+        appConfigProvider = DefaultAppConfigProvider()
         themeSettingsRepository = DataStoreThemeSettingsRepository(
             keyValueStore = keyValueStore,
             scope = appScope,

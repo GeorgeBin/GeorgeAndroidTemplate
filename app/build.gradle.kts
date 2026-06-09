@@ -69,19 +69,23 @@ android {
 dependencies {
     implementation(project(":base:crash"))
     implementation(project(":base:log"))
+    implementation(project(":core:appconfig"))
     implementation(project(":core:datastore"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:input"))
     implementation(project(":core:locale"))
+    implementation(project(":core:navigation"))
     implementation(project(":core:settings"))
     implementation(project(":core:ui"))
     implementation(project(":feature:home"))
+    implementation(project(":feature:main"))
     implementation(project(":feature:settings"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.process.phoenix)
 }
 

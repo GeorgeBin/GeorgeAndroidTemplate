@@ -168,27 +168,33 @@ App 级状态按生命周期语义分为三类：
 当前已存在模块：
 
 - `:app`：应用入口、顶层壳和 feature 组装。
+- `:base:common`：通用 `AppResult`、`AppError`、`UiText`、加载状态和组件生命周期基础模型。
 - `:base:io`：纯 Kotlin 文件工具模块骨架。
 - `:base:log`：日志基础模块起点。
+- `:core:appconfig`：AppConfig 配置中心，提供启动、主页面 Tab、设置入口和业务模块开关的默认配置。
 - `:core:model`：共享模型。
 - `:core:adaptive`：竖屏、横屏、折叠屏和 WindowSizeClass 响应式判断能力。
 - `:core:data`：数据仓库抽象和当前静态数据实现。
 - `:core:database`：Room / SQLite、Entity、Dao 和 Migration 边界骨架。
 - `:core:datastore`：KV、Preferences、Proto DataStore 和轻量状态持久化边界。
 - `:core:designsystem`：Compose 主题和设计系统起点。
+- `:core:input`：按键、遥控器、D-Pad、键盘输入抽象。
+- `:core:locale`：语言切换、Locale 解析和应用级语言状态。
+- `:core:navigation`：Root、Startup、Main 和 Tab 相关路由常量与导航扩展。
 - `:core:network`：网络基础设施聚合模块，当前 HTTP 能力放在 `http` 包下。
+- `:core:permission`：权限模型和权限声明骨架。
 - `:core:settings`：用户设置状态起点，当前主题和 AppScale 选择为运行期内存态。
 - `:core:storage`：Android 文件、目录、缓存、导入导出和下载文件边界骨架。
+- `:core:ui`：通用 Compose 组件、Modifier、焦点和输入相关 UI 能力。
 - `:feature:home`：首页 feature。
+- `:feature:main`：主页面壳和可配置底部 Tab 展示，不直接依赖具体业务 feature。
 - `:feature:settings`：设置页面起点，当前提供主题切换。
 
 建议后续按需求逐步补充具体实现，不提前创建业务 API 或示例实现：
 
-- 需要通用 UI 组件时，新增 `:core:ui`。
-- 主题和 AppScale 选择由 `:core:settings` 基于 `:core:datastore` 持久化。
-- 需要语言切换能力时，新增 `:core:locale`。
+- 继续补齐 `:core:startup` 和 `StartupCoordinator`，让系统 Splash 后先进入启动编排，再进入 Main。
+- 主题和 AppScale 选择继续由 `:core:settings` 基于 `:core:datastore` 持久化。
 - 具体页面布局策略由各 feature 自己实现，`core:adaptive` 只提供响应式判断能力。
-- 需要 D-Pad、遥控器、键盘抽象时，新增 `:core:input`。
 - 需要系统签名、系统应用或 Root 能力时，新增 `:base:system`，并为每个 API 标明权限前置条件和失败行为。
 - `:core:database` 先不启用 Room 插件和依赖，等出现真实数据库 schema、DAO 或迁移需求时再接入。
 

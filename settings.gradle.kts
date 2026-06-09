@@ -60,6 +60,7 @@ dependencyResolutionManagement {
 
 include(
     ":app",
+    ":base:common",
     ":base:crash",
     ":base:io",
     ":base:log",
@@ -73,11 +74,15 @@ include(
     ":core:input",
     ":core:locale",
     ":core:model",
+    ":core:appconfig",
+    ":core:navigation",
     ":core:network",
+    ":core:permission",
     ":core:settings",
     ":core:storage",
     ":core:ui",
     ":feature:home",
+    ":feature:main",
     ":feature:settings",
 )
 
