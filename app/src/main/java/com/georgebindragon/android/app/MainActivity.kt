@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.georgebindragon.android.core.designsystem.theme.TemplateAppScale
 import com.georgebindragon.android.core.designsystem.systembar.enableImmersiveStatusBar
 import com.georgebindragon.android.core.designsystem.theme.TemplateTheme
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableImmersiveStatusBar()
         AppDependencies.languageManager.refreshLanguage()
