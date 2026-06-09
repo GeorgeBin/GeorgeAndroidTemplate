@@ -10,7 +10,7 @@ plugins {
 val apkExportBuildType = providers.gradleProperty("apkExportBuildType").orElse("release")!!
 val apkExportDir = providers.gradleProperty("apkExportDir").orElse("${projectDir}/build/apk")!!
 val apkFileNameFormat = providers.gradleProperty("apkFileNameFormat")
-    .orElse("\${appName}-v\${versionName}-\${buildType}.apk")!!
+    .orElse($$"${appName}-v${versionName}-${buildType}.apk")!!
 
 // apk 打包：签名
 val signingStoreFilePath = providers.gradleProperty("signing.storeFile")
@@ -95,18 +95,18 @@ tasks.register<Copy>("exportApk") {
     val assembleTask = "assemble" + buildType.replaceFirstChar { it.uppercase() }
     dependsOn(assembleTask)
 
-    val appName = "InfraD_Template"
+    val appName = "AndroidTemplate"
     val appId = android.defaultConfig.applicationId ?: "unknown.package"
     val versionName = android.defaultConfig.versionName ?: "0.0.0"
     val versionCode = android.defaultConfig.versionCode ?: 0
     val buildTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
     val resolvedApkName = apkFileNameFormat.get()
-        .replace("\${appName}", appName)
-        .replace("\${packageName}", appId)
-        .replace("\${buildType}", buildType)
-        .replace("\${versionName}", versionName)
-        .replace("\${versionCode}", versionCode.toString())
-        .replace("\${buildTime}", buildTime)
+        .replace($$"${appName}", appName)
+        .replace($$"${packageName}", appId)
+        .replace($$"${buildType}", buildType)
+        .replace($$"${versionName}", versionName)
+        .replace($$"${versionCode}", versionCode.toString())
+        .replace($$"${buildTime}", buildTime)
 
     from(layout.buildDirectory.dir("outputs/apk/$buildType")) {
         include("*.apk")
