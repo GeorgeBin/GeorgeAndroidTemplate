@@ -1,7 +1,7 @@
 <resources>
 
     <!-- todo：应用名 -->
-    <string name="app_name">Demo</string>
+    <string name="app_name">模板</string>
     <string name="nav_home">首页</string>
     <string name="nav_settings">设置</string>
     <string name="content_title">内容区域</string>
