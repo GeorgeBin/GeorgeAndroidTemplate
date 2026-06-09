@@ -7,19 +7,19 @@ plugins {
 }
 
 // apk 打包：类型 + 文件命名 + 存储路径
-val apkExportBuildType = providers.gradleProperty("apkExportBuildType").orElse("release")
-val apkExportDir = providers.gradleProperty("apkExportDir").orElse("${projectDir}/build/apk")
+val apkExportBuildType = providers.gradleProperty("apkExportBuildType").orElse("release")!!
+val apkExportDir = providers.gradleProperty("apkExportDir").orElse("${projectDir}/build/apk")!!
 val apkFileNameFormat = providers.gradleProperty("apkFileNameFormat")
-    .orElse("\${appName}-v\${versionName}-\${buildType}.apk")
+    .orElse("\${appName}-v\${versionName}-\${buildType}.apk")!!
 
 // apk 打包：签名
 val signingStoreFilePath = providers.gradleProperty("signing.storeFile")
-    .orElse("${rootDir}/signkey/systemkey.jks")
+    .orElse("${rootDir}/signkey/systemkey.jks")!!
 val signingStoreFile = file(signingStoreFilePath.get())
 val hasReleaseSigning = signingStoreFile.exists()
-val signingKeyAlias = providers.gradleProperty("signing.keyAlias").orElse("zyzl")
-val signingKeyPassword = providers.gradleProperty("signing.keyPassword").orElse("androidsystem")
-val signingStorePassword = providers.gradleProperty("signing.storePassword").orElse("androidsystem")
+val signingKeyAlias = providers.gradleProperty("signing.keyAlias").orElse("zyzl")!!
+val signingKeyPassword = providers.gradleProperty("signing.keyPassword").orElse("androidsystem")!!
+val signingStorePassword = providers.gradleProperty("signing.storePassword").orElse("androidsystem")!!
 
 android {
     namespace = "com.georgebindragon.android.app"
