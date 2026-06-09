@@ -23,7 +23,7 @@ targetSdk：
 文件：settings.gradle.kts
 
 ```kotlin
-rootProject.name = "InfraD_Template"
+rootProject.name = "Android：Template"
 ```
 
 > 该值会影响 Android Studio 显示的工程名称。
@@ -37,7 +37,7 @@ rootProject.name = "InfraD_Template"
 ```kotlin
 applicationId = "com.georgebindragon.android.app"
 // 修改为你的正式包名，例如：
-applicationId = "com.demo.xxx"
+applicationId = "z.demo.xxx"
 ```
 
 
@@ -47,7 +47,7 @@ applicationId = "com.demo.xxx"
 文件：app/src/main/res/values/strings.xml
 
 ```xml
-<string name="app_name">Demo</string>
+<string name="app_name">Template</string>
 ```
 
 
