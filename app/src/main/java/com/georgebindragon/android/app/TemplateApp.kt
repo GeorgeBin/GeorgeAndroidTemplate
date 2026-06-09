@@ -16,9 +16,11 @@ import com.georgebindragon.android.core.input.focus.AppInteractionMode
 import com.georgebindragon.android.core.locale.AppLanguage
 import com.georgebindragon.android.core.navigation.MainRoute
 import com.georgebindragon.android.core.navigation.RootRoute
+import com.georgebindragon.android.core.navigation.StartupRoute as StartupNavigationRoute
 import com.georgebindragon.android.core.settings.AppScale
 import com.georgebindragon.android.core.settings.PageOrientation
 import com.georgebindragon.android.core.settings.ThemeMode
+import com.georgebindragon.android.core.startup.StartupDestination
 import com.georgebindragon.android.core.ui.focus.ProvideAppInteractionMode
 import com.georgebindragon.android.feature.home.homeScreen
 import com.georgebindragon.android.feature.main.MainShellRoute
@@ -52,11 +54,33 @@ fun TemplateApp(
     ProvideAppInteractionMode(mode = interactionMode) {
         NavHost(
             navController = rootNavController,
-            startDestination = RootRoute.Main,
+            startDestination = RootRoute.Startup,
             modifier = modifier,
         ) {
             composable(RootRoute.Startup) {
-                Text(text = "启动流程")
+                StartupRoute(
+                    startupCoordinator = AppDependencies.startupCoordinator,
+                    onDestinationResolved = { destination ->
+                        rootNavController.navigate(destination.toRoute()) {
+                            popUpTo(RootRoute.Startup) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    },
+                )
+            }
+            composable(StartupNavigationRoute.Privacy) {
+                Text(text = "隐私协议")
+            }
+            composable(StartupNavigationRoute.PermissionOverview) {
+                Text(text = "权限总览")
+            }
+            composable(StartupNavigationRoute.PermissionRequest) {
+                Text(text = "权限申请")
+            }
+            composable(StartupNavigationRoute.Login) {
+                Text(text = "登录")
             }
             composable(RootRoute.Main) {
                 MainGraph(
@@ -83,6 +107,13 @@ fun TemplateApp(
             }
         }
     }
+}
+
+private fun StartupDestination.toRoute(): String = when (this) {
+    StartupDestination.Privacy -> StartupNavigationRoute.Privacy
+    StartupDestination.PermissionOverview -> StartupNavigationRoute.PermissionOverview
+    StartupDestination.Login -> StartupNavigationRoute.Login
+    StartupDestination.Main -> RootRoute.Main
 }
 
 @Composable

@@ -76,6 +76,7 @@ dependencies {
     implementation(project(":core:locale"))
     implementation(project(":core:navigation"))
     implementation(project(":core:settings"))
+    implementation(project(":core:startup"))
     implementation(project(":core:ui"))
     implementation(project(":feature:home"))
     implementation(project(":feature:main"))

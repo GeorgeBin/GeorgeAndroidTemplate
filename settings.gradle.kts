@@ -79,6 +79,7 @@ include(
     ":core:network",
     ":core:permission",
     ":core:settings",
+    ":core:startup",
     ":core:storage",
     ":core:ui",
     ":feature:home",

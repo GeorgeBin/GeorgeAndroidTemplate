@@ -13,6 +13,8 @@ import com.georgebindragon.android.core.locale.LanguageManager
 import com.georgebindragon.android.core.locale.SetAppLanguageUseCase
 import com.georgebindragon.android.core.settings.DataStoreThemeSettingsRepository
 import com.georgebindragon.android.core.settings.ThemeSettingsRepository
+import com.georgebindragon.android.core.startup.DefaultStartupCoordinator
+import com.georgebindragon.android.core.startup.StartupCoordinator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -40,9 +42,13 @@ object AppDependencies {
     lateinit var appConfigProvider: AppConfigProvider
         private set
 
+    lateinit var startupCoordinator: StartupCoordinator
+        private set
+
     fun init(context: Context) {
         keyValueStore = PreferencesKeyValueStore(context)
         appConfigProvider = DefaultAppConfigProvider()
+        startupCoordinator = DefaultStartupCoordinator(appConfigProvider)
         themeSettingsRepository = DataStoreThemeSettingsRepository(
             keyValueStore = keyValueStore,
             scope = appScope,

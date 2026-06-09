@@ -184,6 +184,7 @@ App 级状态按生命周期语义分为三类：
 - `:core:network`：网络基础设施聚合模块，当前 HTTP 能力放在 `http` 包下。
 - `:core:permission`：权限模型和权限声明骨架。
 - `:core:settings`：用户设置状态起点，当前主题和 AppScale 选择为运行期内存态。
+- `:core:startup`：启动目的地和启动编排接口骨架，当前默认进入 Main。
 - `:core:storage`：Android 文件、目录、缓存、导入导出和下载文件边界骨架。
 - `:core:ui`：通用 Compose 组件、Modifier、焦点和输入相关 UI 能力。
 - `:feature:home`：首页 feature。
@@ -192,7 +193,7 @@ App 级状态按生命周期语义分为三类：
 
 建议后续按需求逐步补充具体实现，不提前创建业务 API 或示例实现：
 
-- 继续补齐 `:core:startup` 和 `StartupCoordinator`，让系统 Splash 后先进入启动编排，再进入 Main。
+- 继续补齐隐私、权限和登录 gate 的真实状态来源，让 `StartupCoordinator` 从默认进入 Main 演进为按配置和状态决策。
 - 主题和 AppScale 选择继续由 `:core:settings` 基于 `:core:datastore` 持久化。
 - 具体页面布局策略由各 feature 自己实现，`core:adaptive` 只提供响应式判断能力。
 - 需要系统签名、系统应用或 Root 能力时，新增 `:base:system`，并为每个 API 标明权限前置条件和失败行为。
