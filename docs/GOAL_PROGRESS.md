@@ -169,6 +169,19 @@
   - `DefaultAppTimeRepository`
 - `core:time` 当前支持系统时间、开机时长、时区、日期和时分秒 `StateFlow`。
 - `core:time` 预留 NTP、HTTP 和私有接口校准策略结果模型，尚不实现外部校准源。
+- 新增 `core:timer` 共享定时器基础：
+  - `SharedTimerManager`
+  - `TimerTick`
+  - `TimerSource`
+  - `CoroutineTimerSource`
+- `SharedTimerManager` 当前按相同 interval 复用同一个 ticker flow，并通过 `SharingStarted.WhileSubscribed` 在无订阅者时停止上游。
+- 新增 `core:scheduler` 调度接口基础：
+  - `AppScheduler`
+  - `ScheduleRequest`
+  - `RepeatingScheduleRequest`
+  - `ScheduleTime`
+  - `AlarmManagerScheduler`
+- `AlarmManagerScheduler` 当前支持指定时间点、延迟时间和重复间隔调度，以及按 id 取消。
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
@@ -177,8 +190,6 @@
 
 - feature ViewModel 的 `@HiltViewModel` 迁移
 - 彻底删除 `AppDependencies`
-- `core:timer`
-- `core:scheduler`
 - `core:boot`
 - `core:service`
 - `core:update` 和 `feature:update`
@@ -307,6 +318,26 @@ core/time/src/main/java/com/georgebindragon/android/core/time/DefaultAppTimeRepo
 core/time/src/main/java/com/georgebindragon/android/core/time/SystemTimeProvider.kt
 core/time/src/main/java/com/georgebindragon/android/core/time/TimeCalibration.kt
 core/time/src/test/java/com/georgebindragon/android/core/time/DefaultAppTimeRepositoryTest.kt
+docs/GOAL_PROGRESS.md
+docs/architecture.md
+settings.gradle.kts
+```
+
+阶段 13 当前改动涉及文件：
+
+```text
+core/scheduler/build.gradle.kts
+core/scheduler/src/main/AndroidManifest.xml
+core/scheduler/src/main/java/com/georgebindragon/android/core/scheduler/AlarmManagerScheduler.kt
+core/scheduler/src/main/java/com/georgebindragon/android/core/scheduler/AppScheduler.kt
+core/scheduler/src/main/java/com/georgebindragon/android/core/scheduler/ScheduleRequest.kt
+core/scheduler/src/main/java/com/georgebindragon/android/core/scheduler/ScheduleTime.kt
+core/timer/build.gradle.kts
+core/timer/src/main/AndroidManifest.xml
+core/timer/src/main/java/com/georgebindragon/android/core/timer/SharedTimerManager.kt
+core/timer/src/main/java/com/georgebindragon/android/core/timer/TimerSource.kt
+core/timer/src/main/java/com/georgebindragon/android/core/timer/TimerTick.kt
+core/timer/src/test/java/com/georgebindragon/android/core/timer/SharedTimerManagerTest.kt
 docs/GOAL_PROGRESS.md
 docs/architecture.md
 settings.gradle.kts
@@ -500,6 +531,22 @@ Hilt 接入阶段单元测试验证，已通过：
 
 结果：成功。
 
+定时器与调度阶段核心验证，已通过：
+
+```bash
+./gradlew :core:timer:testDebugUnitTest :core:timer:compileDebugKotlin :core:scheduler:compileDebugKotlin --no-daemon
+```
+
+结果：成功。
+
+定时器与调度阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
@@ -515,7 +562,7 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，如果阶段 12 已提交，则继续阶段 13：共享定时器与 AlarmManager 调度接口；如果阶段 12 尚未提交，则先运行阶段验收命令并提交：
+确认工作区状态后，如果阶段 13 已提交，则继续阶段 14：常用功能接口；如果阶段 13 尚未提交，则先运行阶段验收命令并提交：
 
 ```bash
 ./gradlew assembleDebug --no-daemon

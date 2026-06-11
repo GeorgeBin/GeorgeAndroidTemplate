@@ -189,7 +189,9 @@ App 级状态按生命周期语义分为三类：
 - `:core:settings`：用户设置状态起点，当前主题和 AppScale 选择为运行期内存态。
 - `:core:startup`：启动目的地和启动编排接口骨架，当前根据隐私、权限和认证状态决定进入 Privacy、Permission、Login 或 Main。
 - `:core:storage`：Android 文件、目录、缓存、导入导出和下载文件边界骨架。
+- `:core:scheduler`：App 级调度接口骨架，当前提供 `AlarmManager` 指定时间点和重复间隔调度封装。
 - `:core:time`：App 级时间能力接口，当前提供系统时间、开机时长、时区、日期和时分秒状态流；NTP、HTTP 和私有校准源后续再接入。
+- `:core:timer`：共享定时器接口骨架，当前按相同 interval 复用 ticker，并在无订阅者时停止上游。
 - `:core:ui`：通用 Compose 组件、Modifier、焦点和输入相关 UI 能力。
 - `:feature:auth`：登录 gate 页面，提供账号密码登录、游客模式入口和登录成功跳转。
 - `:feature:home`：首页 feature。
