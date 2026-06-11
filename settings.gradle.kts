@@ -91,6 +91,7 @@ include(
     ":core:settings",
     ":core:startup",
     ":core:storage",
+    ":core:system",
     ":core:scheduler",
     ":core:time",
     ":core:timer",

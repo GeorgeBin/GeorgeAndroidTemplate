@@ -193,6 +193,14 @@
   - `base:network-tool`：`PingTool`、`PingResult`
   - `core:feedback`：`FeedbackMessage`、`FeedbackManager`
   - `core:notification`：`NotificationChannelManager`、`AppNotificationManager`
+- 新增 `core:system` 系统特权能力骨架：
+  - `SystemCapabilities`
+  - `SystemCapabilityManager`
+  - `SystemPermissionManager`
+  - `SilentInstallManager`
+  - `RootShellExecutor`
+  - `PrivilegedSystemExecutor`
+- `core:system` 默认普通 App 环境下所有能力返回不可用，Root、静默安装、系统权限和特权执行入口均先做 capability check。
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
@@ -201,7 +209,7 @@
 
 - feature ViewModel 的 `@HiltViewModel` 迁移
 - 彻底删除 `AppDependencies`
-- `core:system` 和 `feature:system-debug`
+- `feature:system-debug`
 - `feature:update`
 - 后续 UI 能力完善，包括通用列表、状态页、DialogHost、ToastBridge、跑马灯文字等
 - 真实业务模块插件化示例
@@ -390,6 +398,24 @@ core/notification/build.gradle.kts
 core/notification/src/main/AndroidManifest.xml
 core/notification/src/main/java/com/georgebindragon/android/core/notification/AppNotificationManager.kt
 core/notification/src/main/java/com/georgebindragon/android/core/notification/NotificationChannelManager.kt
+docs/GOAL_PROGRESS.md
+docs/architecture.md
+settings.gradle.kts
+```
+
+阶段 16 当前改动涉及文件：
+
+```text
+core/system/build.gradle.kts
+core/system/src/main/AndroidManifest.xml
+core/system/src/main/java/com/georgebindragon/android/core/system/PrivilegedSystemExecutor.kt
+core/system/src/main/java/com/georgebindragon/android/core/system/RootShellExecutor.kt
+core/system/src/main/java/com/georgebindragon/android/core/system/SilentInstallManager.kt
+core/system/src/main/java/com/georgebindragon/android/core/system/SystemCapabilities.kt
+core/system/src/main/java/com/georgebindragon/android/core/system/SystemCapabilityManager.kt
+core/system/src/main/java/com/georgebindragon/android/core/system/SystemErrors.kt
+core/system/src/main/java/com/georgebindragon/android/core/system/SystemPermissionManager.kt
+core/system/src/test/java/com/georgebindragon/android/core/system/SystemCapabilitySafetyTest.kt
 docs/GOAL_PROGRESS.md
 docs/architecture.md
 settings.gradle.kts
@@ -631,6 +657,22 @@ Hilt 接入阶段单元测试验证，已通过：
 
 结果：成功。
 
+系统特权能力骨架阶段核心验证，已通过：
+
+```bash
+./gradlew :core:system:testDebugUnitTest :core:system:compileDebugKotlin --no-daemon
+```
+
+结果：成功，覆盖默认不可用和 capability check 行为。
+
+系统特权能力骨架阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
@@ -646,7 +688,7 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，如果阶段 15 已提交，则继续阶段 16：系统特权能力骨架；如果阶段 15 尚未提交，则先运行阶段验收命令并提交：
+确认工作区状态后，如果阶段 16 已提交，则继续阶段 17：UI 组件完善；如果阶段 16 尚未提交，则先运行阶段验收命令并提交：
 
 ```bash
 ./gradlew assembleDebug --no-daemon
