@@ -1,10 +1,10 @@
 package com.georgebindragon.android.app
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -22,12 +22,14 @@ import com.georgebindragon.android.core.settings.PageOrientation
 import com.georgebindragon.android.core.settings.ThemeMode
 import com.georgebindragon.android.core.startup.StartupDestination
 import com.georgebindragon.android.core.ui.focus.ProvideAppInteractionMode
+import com.georgebindragon.android.feature.auth.loginScreen
 import com.georgebindragon.android.feature.home.homeScreen
 import com.georgebindragon.android.feature.main.MainShellRoute
 import com.georgebindragon.android.feature.permission.permissionOverviewScreen
 import com.georgebindragon.android.feature.permission.permissionRequestScreen
 import com.georgebindragon.android.feature.privacy.privacyScreen
 import com.georgebindragon.android.feature.settings.settingsScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun TemplateApp(
@@ -53,6 +55,7 @@ fun TemplateApp(
     appConfig: AppConfig = AppDependencies.appConfigProvider.getConfig(),
 ) {
     val rootNavController = rememberNavController()
+    val scope = rememberCoroutineScope()
 
     ProvideAppInteractionMode(mode = interactionMode) {
         NavHost(
@@ -95,7 +98,7 @@ fun TemplateApp(
                     }
                 },
                 onComplete = {
-                    rootNavController.navigate(RootRoute.Main) {
+                    rootNavController.navigate(RootRoute.Startup) {
                         popUpTo(StartupNavigationRoute.PermissionOverview) {
                             inclusive = true
                         }
@@ -108,7 +111,7 @@ fun TemplateApp(
                 permissionRepository = AppDependencies.permissionRepository,
                 permissionIntentFactory = AppDependencies.permissionIntentFactory,
                 onComplete = {
-                    rootNavController.navigate(RootRoute.Main) {
+                    rootNavController.navigate(RootRoute.Startup) {
                         popUpTo(StartupNavigationRoute.PermissionOverview) {
                             inclusive = true
                         }
@@ -116,9 +119,18 @@ fun TemplateApp(
                     }
                 },
             )
-            composable(StartupNavigationRoute.Login) {
-                Text(text = "登录")
-            }
+            loginScreen(
+                authConfig = appConfig.auth,
+                authRepository = AppDependencies.authRepository,
+                onLoginSuccess = {
+                    rootNavController.navigate(RootRoute.Main) {
+                        popUpTo(StartupNavigationRoute.Login) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+            )
             composable(RootRoute.Main) {
                 MainGraph(
                     appConfig = appConfig,
@@ -143,6 +155,17 @@ fun TemplateApp(
                     onPermissionClick = {
                         rootNavController.navigate(StartupNavigationRoute.PermissionOverview) {
                             launchSingleTop = true
+                        }
+                    },
+                    onLogoutClick = {
+                        scope.launch {
+                            AppDependencies.authRepository.logout()
+                            rootNavController.navigate(RootRoute.Startup) {
+                                popUpTo(RootRoute.Main) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
                         }
                     },
                 )
@@ -180,6 +203,7 @@ private fun MainGraph(
     onExitClick: () -> Unit,
     onRestartClick: () -> Unit,
     onPermissionClick: () -> Unit,
+    onLogoutClick: () -> Unit,
 ) {
     val mainNavController = rememberNavController()
     val visibleTabs = remember(appConfig.main.tabs) {
@@ -241,6 +265,7 @@ private fun MainGraph(
                     }
                 },
                 onPermissionClick = onPermissionClick,
+                onLogoutClick = onLogoutClick,
             )
         }
     }

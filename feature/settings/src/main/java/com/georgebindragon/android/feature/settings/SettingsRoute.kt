@@ -25,6 +25,7 @@ fun SettingsRoute(
     onLanguageChange: (AppLanguage) -> Unit,
     onBackHomeClick: () -> Unit,
     onPermissionClick: () -> Unit,
+    onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SettingsScreen(
@@ -43,6 +44,7 @@ fun SettingsRoute(
         onLanguageChange = onLanguageChange,
         onBackHomeClick = onBackHomeClick,
         onPermissionClick = onPermissionClick,
+        onLogoutClick = onLogoutClick,
         modifier = modifier,
     )
 }

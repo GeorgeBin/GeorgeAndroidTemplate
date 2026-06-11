@@ -48,6 +48,7 @@ internal fun SettingsScreen(
     onLanguageChange: (AppLanguage) -> Unit,
     onBackHomeClick: () -> Unit,
     onPermissionClick: () -> Unit,
+    onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val dimensions = TemplateDimensions.current
@@ -138,6 +139,9 @@ internal fun SettingsScreen(
         }
         FocusableButton(onClick = onPermissionClick) {
             Text(text = stringResource(R.string.settings_permission_management))
+        }
+        FocusableButton(onClick = onLogoutClick) {
+            Text(text = stringResource(R.string.settings_logout))
         }
         FocusableButton(onClick = onBackHomeClick) {
             Text(text = stringResource(R.string.settings_back_home))
@@ -280,6 +284,7 @@ private fun SettingsScreenPreview() {
                 onLanguageChange = {},
                 onBackHomeClick = {},
                 onPermissionClick = {},
+                onLogoutClick = {},
             )
         }
     }

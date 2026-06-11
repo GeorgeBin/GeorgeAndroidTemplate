@@ -25,6 +25,7 @@ fun NavGraphBuilder.settingsScreen(
     onLanguageChange: (AppLanguage) -> Unit,
     onBackHomeClick: () -> Unit,
     onPermissionClick: () -> Unit,
+    onLogoutClick: () -> Unit,
 ) {
     composable(MainRoute.Settings) {
         SettingsRoute(
@@ -43,6 +44,7 @@ fun NavGraphBuilder.settingsScreen(
             onLanguageChange = onLanguageChange,
             onBackHomeClick = onBackHomeClick,
             onPermissionClick = onPermissionClick,
+            onLogoutClick = onLogoutClick,
         )
     }
 }

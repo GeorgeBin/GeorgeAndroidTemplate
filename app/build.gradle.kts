@@ -68,8 +68,10 @@ android {
 
 dependencies {
     implementation(project(":base:crash"))
+    implementation(project(":base:common"))
     implementation(project(":base:log"))
     implementation(project(":core:appconfig"))
+    implementation(project(":core:auth"))
     implementation(project(":core:datastore"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:input"))
@@ -80,6 +82,7 @@ dependencies {
     implementation(project(":core:settings"))
     implementation(project(":core:startup"))
     implementation(project(":core:ui"))
+    implementation(project(":feature:auth"))
     implementation(project(":feature:home"))
     implementation(project(":feature:main"))
     implementation(project(":feature:permission"))

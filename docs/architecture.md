@@ -172,6 +172,7 @@ App 级状态按生命周期语义分为三类：
 - `:base:io`：纯 Kotlin 文件工具模块骨架。
 - `:base:log`：日志基础模块起点。
 - `:core:appconfig`：AppConfig 配置中心，提供启动、主页面 Tab、设置入口和业务模块开关的默认配置。
+- `:core:auth`：登录态、Session、游客模式、登录和退出登录状态持久化能力。
 - `:core:model`：共享模型。
 - `:core:adaptive`：竖屏、横屏、折叠屏和 WindowSizeClass 响应式判断能力。
 - `:core:data`：数据仓库抽象和当前静态数据实现。
@@ -185,18 +186,19 @@ App 级状态按生命周期语义分为三类：
 - `:core:permission`：权限模型、权限声明、状态检查、特殊权限设置跳转和权限 gate 持久化状态。
 - `:core:privacy`：隐私协议状态、版本判断和同意记录持久化能力。
 - `:core:settings`：用户设置状态起点，当前主题和 AppScale 选择为运行期内存态。
-- `:core:startup`：启动目的地和启动编排接口骨架，当前根据隐私和权限状态决定进入 Privacy、Permission 或 Main。
+- `:core:startup`：启动目的地和启动编排接口骨架，当前根据隐私、权限和认证状态决定进入 Privacy、Permission、Login 或 Main。
 - `:core:storage`：Android 文件、目录、缓存、导入导出和下载文件边界骨架。
 - `:core:ui`：通用 Compose 组件、Modifier、焦点和输入相关 UI 能力。
+- `:feature:auth`：登录 gate 页面，提供账号密码登录、游客模式入口和登录成功跳转。
 - `:feature:home`：首页 feature。
 - `:feature:main`：主页面壳和可配置底部 Tab 展示，不直接依赖具体业务 feature。
 - `:feature:permission`：权限总览和权限申请 gate 页面，支持普通权限申请、特殊权限设置跳转和可选权限跳过。
 - `:feature:privacy`：隐私协议 gate 页面，提供同意和不同意入口。
-- `:feature:settings`：设置页面起点，当前提供主题切换和权限管理入口。
+- `:feature:settings`：设置页面起点，当前提供主题切换、权限管理和退出登录入口。
 
 建议后续按需求逐步补充具体实现，不提前创建业务 API 或示例实现：
 
-- 继续补齐登录 gate 的真实状态来源，让 `StartupCoordinator` 按配置和状态完整决策。
+- 继续让设置页根据 `SettingsFeatureConfig` 动态显示或隐藏入口。
 - 主题和 AppScale 选择继续由 `:core:settings` 基于 `:core:datastore` 持久化。
 - 具体页面布局策略由各 feature 自己实现，`core:adaptive` 只提供响应式判断能力。
 - 需要系统签名、系统应用或 Root 能力时，新增 `:base:system`，并为每个 API 标明权限前置条件和失败行为。

@@ -3,9 +3,12 @@ package com.georgebindragon.android.core.startup
 import com.georgebindragon.android.base.common.AppResult
 import com.georgebindragon.android.core.appconfig.AppConfig
 import com.georgebindragon.android.core.appconfig.AppConfigProvider
+import com.georgebindragon.android.core.appconfig.AuthFeatureConfig
 import com.georgebindragon.android.core.appconfig.DefaultAppConfigProvider
 import com.georgebindragon.android.core.appconfig.PermissionFeatureConfig
 import com.georgebindragon.android.core.appconfig.PrivacyFeatureConfig
+import com.georgebindragon.android.core.auth.AuthRepository
+import com.georgebindragon.android.core.auth.AuthState
 import com.georgebindragon.android.core.permission.AppPermission
 import com.georgebindragon.android.core.permission.AppPermissionDeclaration
 import com.georgebindragon.android.core.permission.PermissionGateState
@@ -25,6 +28,7 @@ class DefaultStartupCoordinatorTest {
             appConfigProvider = DefaultAppConfigProvider(),
             privacyRepository = FakePrivacyRepository(shouldShowPrivacy = false),
             permissionRepository = FakePermissionRepository(shouldShowPermissionGate = false),
+            authRepository = FakeAuthRepository(loggedIn = true),
         )
 
         assertEquals(StartupDestination.Main, coordinator.resolveDestination())
@@ -36,6 +40,7 @@ class DefaultStartupCoordinatorTest {
             appConfigProvider = DefaultAppConfigProvider(),
             privacyRepository = FakePrivacyRepository(shouldShowPrivacy = true),
             permissionRepository = FakePermissionRepository(shouldShowPermissionGate = true),
+            authRepository = FakeAuthRepository(loggedIn = false),
         )
 
         assertEquals(StartupDestination.Privacy, coordinator.resolveDestination())
@@ -51,6 +56,7 @@ class DefaultStartupCoordinatorTest {
             ),
             privacyRepository = FakePrivacyRepository(shouldShowPrivacy = true),
             permissionRepository = FakePermissionRepository(shouldShowPermissionGate = false),
+            authRepository = FakeAuthRepository(loggedIn = true),
         )
 
         assertEquals(StartupDestination.Main, coordinator.resolveDestination())
@@ -62,6 +68,7 @@ class DefaultStartupCoordinatorTest {
             appConfigProvider = DefaultAppConfigProvider(),
             privacyRepository = FakePrivacyRepository(shouldShowPrivacy = false),
             permissionRepository = FakePermissionRepository(shouldShowPermissionGate = true),
+            authRepository = FakeAuthRepository(loggedIn = false),
         )
 
         assertEquals(StartupDestination.PermissionOverview, coordinator.resolveDestination())
@@ -78,6 +85,37 @@ class DefaultStartupCoordinatorTest {
             ),
             privacyRepository = FakePrivacyRepository(shouldShowPrivacy = false),
             permissionRepository = FakePermissionRepository(shouldShowPermissionGate = true),
+            authRepository = FakeAuthRepository(loggedIn = true),
+        )
+
+        assertEquals(StartupDestination.Main, coordinator.resolveDestination())
+    }
+
+    @Test
+    fun resolveDestinationReturnsLoginWhenAuthIsRequiredAndLoggedOut() = runTest {
+        val coordinator = DefaultStartupCoordinator(
+            appConfigProvider = DefaultAppConfigProvider(),
+            privacyRepository = FakePrivacyRepository(shouldShowPrivacy = false),
+            permissionRepository = FakePermissionRepository(shouldShowPermissionGate = false),
+            authRepository = FakeAuthRepository(loggedIn = false),
+        )
+
+        assertEquals(StartupDestination.Login, coordinator.resolveDestination())
+    }
+
+    @Test
+    fun resolveDestinationSkipsLoginWhenAuthFeatureIsDisabled() = runTest {
+        val coordinator = DefaultStartupCoordinator(
+            appConfigProvider = FixedAppConfigProvider(
+                AppConfig(
+                    privacy = PrivacyFeatureConfig(enabled = false),
+                    permission = PermissionFeatureConfig(enabled = false),
+                    auth = AuthFeatureConfig(enabled = false),
+                ),
+            ),
+            privacyRepository = FakePrivacyRepository(shouldShowPrivacy = false),
+            permissionRepository = FakePermissionRepository(shouldShowPermissionGate = false),
+            authRepository = FakeAuthRepository(loggedIn = false),
         )
 
         assertEquals(StartupDestination.Main, coordinator.resolveDestination())
@@ -86,9 +124,14 @@ class DefaultStartupCoordinatorTest {
     @Test
     fun resolveDestinationCanUseInjectedInitialDestinationAfterPrivacyGate() = runTest {
         val coordinator = DefaultStartupCoordinator(
-            appConfigProvider = DefaultAppConfigProvider(),
+            appConfigProvider = FixedAppConfigProvider(
+                AppConfig(
+                    auth = AuthFeatureConfig(enabled = false),
+                ),
+            ),
             privacyRepository = FakePrivacyRepository(shouldShowPrivacy = false),
             permissionRepository = FakePermissionRepository(shouldShowPermissionGate = false),
+            authRepository = FakeAuthRepository(loggedIn = false),
             initialDestination = StartupDestination.Login,
         )
 
@@ -142,4 +185,26 @@ private class FakePermissionRepository(
     override suspend fun skipOptionalPermissions(
         permissions: List<AppPermission>,
     ): AppResult<Unit> = AppResult.Success(Unit)
+}
+
+private class FakeAuthRepository(
+    private val loggedIn: Boolean,
+) : AuthRepository {
+    private val authState = MutableStateFlow(AuthState())
+
+    override fun observeAuthState() = authState
+
+    override suspend fun isLoggedIn(): Boolean = loggedIn
+
+    override suspend fun login(account: String, password: String): AppResult<Unit> {
+        return AppResult.Success(Unit)
+    }
+
+    override suspend fun continueAsGuest(): AppResult<Unit> {
+        return AppResult.Success(Unit)
+    }
+
+    override suspend fun logout(): AppResult<Unit> {
+        return AppResult.Success(Unit)
+    }
 }

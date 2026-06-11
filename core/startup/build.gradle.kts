@@ -9,6 +9,7 @@ android {
 dependencies {
     implementation(project(":base:common"))
     implementation(project(":core:appconfig"))
+    implementation(project(":core:auth"))
     implementation(project(":core:permission"))
     implementation(project(":core:privacy"))
 

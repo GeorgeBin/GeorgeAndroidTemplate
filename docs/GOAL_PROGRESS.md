@@ -43,6 +43,7 @@
 - `35a1476 feat: add configurable navigation foundation`
 - `f7ed72c feat: add startup coordinator skeleton`
 - `a5ac4bd feat: add privacy agreement gate`
+- `fc31a98 feat: add permission overview gate`
 
 已完成的阶段性内容：
 
@@ -131,14 +132,26 @@
 - 权限总览页支持展示权限用途、必要/可选状态。
 - 权限申请页支持普通运行时权限申请、特殊权限系统设置跳转、状态刷新和可选权限跳过。
 - 设置页新增权限管理入口，可再次进入权限总览。
+- 新增 `core:auth`：
+  - `AuthRepository`
+  - `AuthState`
+  - `SessionState`
+  - `DataStoreAuthRepository`
+- 新增 `feature:auth`：
+  - `LoginRoute`
+  - `LoginScreen`
+  - `LoginViewModel`
+  - `LoginUiState`
+  - `AuthNavigation`
+- `StartupCoordinator` 已在隐私和权限 gate 之后，根据 `AppConfig.auth` 和登录状态决定进入 Login 或 Main。
+- 登录页支持账号密码登录、登录中状态、错误提示、游客模式配置和登录成功进入 Main。
+- 设置页新增退出登录入口，退出后回到 Startup 流程重新解析。
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
 
 目标文档中仍未完成或仅有占位的内容：
 
-- `core:auth` 和 `feature:auth`
-- 登录态、Token/Session、游客模式、退出登录
 - 设置页根据 `SettingsFeatureConfig` 动态显示/隐藏入口
 - Hilt 接入与逐步替换 `AppDependencies`
 - `core:time`
@@ -330,6 +343,30 @@ git diff --check
 
 结果：成功。
 
+登录阶段核心验证，已通过：
+
+```bash
+./gradlew :core:auth:testDebugUnitTest :core:startup:testDebugUnitTest :feature:auth:compileDebugKotlin :app:compileDebugKotlin --no-daemon
+```
+
+结果：成功。
+
+登录阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
+登录阶段全量单测和 lint，已通过：
+
+```bash
+./gradlew testDebugUnitTest lintDebug --no-daemon
+```
+
+结果：成功。
+
 备注：lint 过程中出现过 `:base:io` 作为 Java library 外部依赖未被 Android lint 分析的提示，但未导致失败。
 
 ## 6. 当前阻塞点
@@ -347,10 +384,10 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，从登录 gate 阶段继续：
+确认工作区状态后，从设置页配置化阶段继续：
 
-- 新增 `core:auth` 和 `feature:auth`。
-- 定义登录态、Token/Session、游客模式和退出登录协议。
-- 让 `StartupCoordinator` 在隐私和权限 gate 之后，根据认证配置和登录状态决定是否进入 Login 或 Main。
+- 让设置页根据 `SettingsFeatureConfig` 动态显示或隐藏语言、主题、字号、方向、专家模式、权限、隐私、关于、退出登录、重启等入口。
+- 保持 SettingsScreen 不直接操作 DataStore 或语言底层 API。
+- 继续沿用现有 Repository / UseCase 回调边界。
 
-开始改动前应重新检查 `docs/codex_Goal.md` 中阶段 9 或认证相关要求，并确认当前代码仍以权限 gate 提交之后的状态为基础。
+开始改动前应重新检查 `docs/codex_Goal.md` 中阶段 10 的要求，并确认当前代码仍以登录 gate 提交之后的状态为基础。

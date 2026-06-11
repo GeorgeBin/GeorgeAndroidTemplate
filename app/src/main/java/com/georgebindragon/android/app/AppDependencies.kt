@@ -3,6 +3,8 @@ package com.georgebindragon.android.app
 import android.content.Context
 import com.georgebindragon.android.core.appconfig.AppConfigProvider
 import com.georgebindragon.android.core.appconfig.DefaultAppConfigProvider
+import com.georgebindragon.android.core.auth.AuthRepository
+import com.georgebindragon.android.core.auth.DataStoreAuthRepository
 import com.georgebindragon.android.core.datastore.KeyValueStore
 import com.georgebindragon.android.core.datastore.PreferencesKeyValueStore
 import com.georgebindragon.android.core.input.focus.DataStoreInteractionModeManager
@@ -58,6 +60,9 @@ object AppDependencies {
     lateinit var permissionIntentFactory: PermissionIntentFactory
         private set
 
+    lateinit var authRepository: AuthRepository
+        private set
+
     lateinit var startupCoordinator: StartupCoordinator
         private set
 
@@ -70,10 +75,15 @@ object AppDependencies {
             permissionChecker = AndroidPermissionChecker(context.applicationContext),
         )
         permissionIntentFactory = AndroidPermissionIntentFactory(context.applicationContext)
+        authRepository = DataStoreAuthRepository(
+            keyValueStore = keyValueStore,
+            scope = appScope,
+        )
         startupCoordinator = DefaultStartupCoordinator(
             appConfigProvider = appConfigProvider,
             privacyRepository = privacyRepository,
             permissionRepository = permissionRepository,
+            authRepository = authRepository,
         )
         themeSettingsRepository = DataStoreThemeSettingsRepository(
             keyValueStore = keyValueStore,
