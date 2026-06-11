@@ -172,6 +172,9 @@ App 级状态按生命周期语义分为三类：
 - `:base:common`：通用 `AppResult`、`AppError`、`UiText`、加载状态和组件生命周期基础模型。
 - `:base:io`：纯 Kotlin 文件工具模块骨架。
 - `:base:log`：日志基础模块起点。
+- `:base:media`：音频媒体工具起点，当前提供 PCM16 WAV 写入工具。
+- `:base:network-tool`：网络诊断工具接口起点，当前提供 Ping 接口和结果模型。
+- `:base:shell`：Shell 执行接口和结果模型边界。
 - `:core:appconfig`：AppConfig 配置中心，提供启动、主页面 Tab、设置入口和业务模块开关的默认配置。
 - `:core:auth`：登录态、Session、游客模式、登录和退出登录状态持久化能力。
 - `:core:boot`：开机广播和开机启动处理接口骨架。
@@ -181,11 +184,13 @@ App 级状态按生命周期语义分为三类：
 - `:core:database`：Room / SQLite、Entity、Dao 和 Migration 边界骨架。
 - `:core:datastore`：KV、Preferences、Proto DataStore 和轻量状态持久化边界。
 - `:core:designsystem`：Compose 主题和设计系统起点。
+- `:core:feedback`：Toast、Snackbar、Dialog 等用户反馈消息接口骨架。
 - `:core:input`：按键、遥控器、D-Pad、键盘输入抽象。
 - `:core:lifecycle`：App 启动来源、前后台状态和生命周期观察接口骨架。
 - `:core:locale`：语言切换、Locale 解析和应用级语言状态。
 - `:core:navigation`：Root、Startup、Main 和 Tab 相关路由常量与导航扩展。
 - `:core:network`：网络基础设施聚合模块，当前 HTTP 能力放在 `http` 包下。
+- `:core:notification`：通知渠道和 App 通知管理接口骨架。
 - `:core:permission`：权限模型、权限声明、状态检查、特殊权限设置跳转和权限 gate 持久化状态。
 - `:core:privacy`：隐私协议状态、版本判断和同意记录持久化能力。
 - `:core:service`：前台服务控制器和状态模型骨架。

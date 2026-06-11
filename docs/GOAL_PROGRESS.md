@@ -187,6 +187,12 @@
   - `core:boot`：`BootReceiver`、`BootStartHandler`
   - `core:service`：`ForegroundServiceController`、`ForegroundServiceState`
   - `core:update`：`UpdateChecker`、`UpdateDownloader`、`UpdateInstaller`、`UpdateState`
+- 新增常用工具能力接口骨架：
+  - `base:shell`：`ShellExecutor`、`ShellResult`
+  - `base:media`：`WavWriter`
+  - `base:network-tool`：`PingTool`、`PingResult`
+  - `core:feedback`：`FeedbackMessage`、`FeedbackManager`
+  - `core:notification`：`NotificationChannelManager`、`AppNotificationManager`
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
@@ -195,11 +201,6 @@
 
 - feature ViewModel 的 `@HiltViewModel` 迁移
 - 彻底删除 `AppDependencies`
-- `base:shell`
-- `base:media`
-- `base:network-tool`
-- `core:feedback`
-- `core:notification`
 - `core:system` 和 `feature:system-debug`
 - `feature:update`
 - 后续 UI 能力完善，包括通用列表、状态页、DialogHost、ToastBridge、跑马灯文字等
@@ -365,6 +366,30 @@ core/update/build.gradle.kts
 core/update/src/main/AndroidManifest.xml
 core/update/src/main/java/com/georgebindragon/android/core/update/UpdateContracts.kt
 core/update/src/main/java/com/georgebindragon/android/core/update/UpdateState.kt
+docs/GOAL_PROGRESS.md
+docs/architecture.md
+settings.gradle.kts
+```
+
+阶段 15 当前改动涉及文件：
+
+```text
+base/media/build.gradle.kts
+base/media/src/main/kotlin/com/georgebindragon/android/base/media/WavWriter.kt
+base/network-tool/build.gradle.kts
+base/network-tool/src/main/kotlin/com/georgebindragon/android/base/networktool/PingResult.kt
+base/network-tool/src/main/kotlin/com/georgebindragon/android/base/networktool/PingTool.kt
+base/shell/build.gradle.kts
+base/shell/src/main/kotlin/com/georgebindragon/android/base/shell/ShellExecutor.kt
+base/shell/src/main/kotlin/com/georgebindragon/android/base/shell/ShellResult.kt
+core/feedback/build.gradle.kts
+core/feedback/src/main/AndroidManifest.xml
+core/feedback/src/main/java/com/georgebindragon/android/core/feedback/FeedbackManager.kt
+core/feedback/src/main/java/com/georgebindragon/android/core/feedback/FeedbackMessage.kt
+core/notification/build.gradle.kts
+core/notification/src/main/AndroidManifest.xml
+core/notification/src/main/java/com/georgebindragon/android/core/notification/AppNotificationManager.kt
+core/notification/src/main/java/com/georgebindragon/android/core/notification/NotificationChannelManager.kt
 docs/GOAL_PROGRESS.md
 docs/architecture.md
 settings.gradle.kts
@@ -590,6 +615,22 @@ Hilt 接入阶段单元测试验证，已通过：
 
 结果：成功。
 
+常用工具能力阶段核心验证，已通过：
+
+```bash
+./gradlew :base:shell:compileKotlin :base:media:compileKotlin :base:network-tool:compileKotlin :core:feedback:compileDebugKotlin :core:notification:compileDebugKotlin --no-daemon
+```
+
+结果：成功。
+
+常用工具能力阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
@@ -605,7 +646,7 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，如果阶段 14 已提交，则继续阶段 15：常用工具接口；如果阶段 14 尚未提交，则先运行阶段验收命令并提交：
+确认工作区状态后，如果阶段 15 已提交，则继续阶段 16：系统特权能力骨架；如果阶段 15 尚未提交，则先运行阶段验收命令并提交：
 
 ```bash
 ./gradlew assembleDebug --no-daemon
