@@ -3,7 +3,9 @@ package com.georgebindragon.android.app
 import android.app.Application
 import com.georgebindragon.android.base.crash.CrashReporter
 import com.georgebindragon.android.base.log.TemplateLogger
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class AppApplication : Application() {
 
     override fun onCreate() {
@@ -11,7 +13,6 @@ class AppApplication : Application() {
         instance = this
         TemplateLogger.initialize(this)
         CrashReporter.initialize(this)
-        AppDependencies.init(this)
     }
 
     companion object {

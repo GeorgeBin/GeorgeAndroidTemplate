@@ -12,15 +12,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.georgebindragon.android.core.appconfig.AppConfig
+import com.georgebindragon.android.core.auth.AuthRepository
 import com.georgebindragon.android.core.input.focus.AppInteractionMode
 import com.georgebindragon.android.core.locale.AppLanguage
 import com.georgebindragon.android.core.navigation.MainRoute
 import com.georgebindragon.android.core.navigation.RootRoute
 import com.georgebindragon.android.core.navigation.StartupRoute as StartupNavigationRoute
+import com.georgebindragon.android.core.permission.PermissionIntentFactory
+import com.georgebindragon.android.core.permission.PermissionRepository
+import com.georgebindragon.android.core.privacy.PrivacyRepository
 import com.georgebindragon.android.core.settings.AppScale
 import com.georgebindragon.android.core.settings.PageOrientation
 import com.georgebindragon.android.core.settings.ThemeMode
 import com.georgebindragon.android.core.startup.StartupDestination
+import com.georgebindragon.android.core.startup.StartupCoordinator
 import com.georgebindragon.android.core.ui.focus.ProvideAppInteractionMode
 import com.georgebindragon.android.feature.auth.loginScreen
 import com.georgebindragon.android.feature.home.homeScreen
@@ -52,7 +57,12 @@ fun TemplateApp(
     onExitClick: () -> Unit,
     onRestartClick: () -> Unit,
     modifier: Modifier = Modifier,
-    appConfig: AppConfig = AppDependencies.appConfigProvider.getConfig(),
+    appConfig: AppConfig,
+    startupCoordinator: StartupCoordinator,
+    privacyRepository: PrivacyRepository,
+    permissionRepository: PermissionRepository,
+    permissionIntentFactory: PermissionIntentFactory,
+    authRepository: AuthRepository,
 ) {
     val rootNavController = rememberNavController()
     val scope = rememberCoroutineScope()
@@ -65,7 +75,7 @@ fun TemplateApp(
         ) {
             composable(RootRoute.Startup) {
                 StartupRoute(
-                    startupCoordinator = AppDependencies.startupCoordinator,
+                    startupCoordinator = startupCoordinator,
                     onDestinationResolved = { destination ->
                         rootNavController.navigate(destination.toRoute()) {
                             popUpTo(RootRoute.Startup) {
@@ -78,7 +88,7 @@ fun TemplateApp(
             }
             privacyScreen(
                 privacyConfig = appConfig.privacy,
-                privacyRepository = AppDependencies.privacyRepository,
+                privacyRepository = privacyRepository,
                 onAccepted = {
                     rootNavController.navigate(RootRoute.Startup) {
                         popUpTo(StartupNavigationRoute.Privacy) {
@@ -91,7 +101,7 @@ fun TemplateApp(
             )
             permissionOverviewScreen(
                 permissionConfig = appConfig.permission,
-                permissionRepository = AppDependencies.permissionRepository,
+                permissionRepository = permissionRepository,
                 onContinueRequest = {
                     rootNavController.navigate(StartupNavigationRoute.PermissionRequest) {
                         launchSingleTop = true
@@ -108,8 +118,8 @@ fun TemplateApp(
             )
             permissionRequestScreen(
                 permissionConfig = appConfig.permission,
-                permissionRepository = AppDependencies.permissionRepository,
-                permissionIntentFactory = AppDependencies.permissionIntentFactory,
+                permissionRepository = permissionRepository,
+                permissionIntentFactory = permissionIntentFactory,
                 onComplete = {
                     rootNavController.navigate(RootRoute.Startup) {
                         popUpTo(StartupNavigationRoute.PermissionOverview) {
@@ -121,7 +131,7 @@ fun TemplateApp(
             )
             loginScreen(
                 authConfig = appConfig.auth,
-                authRepository = AppDependencies.authRepository,
+                authRepository = authRepository,
                 onLoginSuccess = {
                     rootNavController.navigate(RootRoute.Main) {
                         popUpTo(StartupNavigationRoute.Login) {
@@ -164,7 +174,7 @@ fun TemplateApp(
                     },
                     onLogoutClick = {
                         scope.launch {
-                            AppDependencies.authRepository.logout()
+                            authRepository.logout()
                             rootNavController.navigate(RootRoute.Startup) {
                                 popUpTo(RootRoute.Main) {
                                     inclusive = true

@@ -37,7 +37,7 @@ app -> feature -> core -> base
 - `Application`：初始化全局依赖、进程级能力和必要的启动任务。
 - `MainActivity`：承接 Android 启动入口、edge-to-edge、顶层 Compose 容器。
 - `NavHost` / 顶层导航：绑定 feature 入口，处理跨 feature 路由。
-- 依赖组装：在没有 DI 框架时负责创建根依赖；引入 Hilt 后负责安装根组件。
+- 依赖组装：当前已接入 Hilt，`app` 负责安装根组件并提供应用级 Repository、UseCase 和运行期依赖。
 - 全局启用入口：决定某个 core 能力或 feature 是否真正启用。
 
 `app` 不应放具体业务页面、通用 UI 组件、数据仓库实现或工具类。
@@ -168,6 +168,7 @@ App 级状态按生命周期语义分为三类：
 当前已存在模块：
 
 - `:app`：应用入口、顶层壳和 feature 组装。
+- `:app` 当前通过 `@HiltAndroidApp`、`@AndroidEntryPoint` 和 app 层 Hilt module 管理根依赖；`AppDependencies` 暂时保留，后续按模块继续迁移后删除。
 - `:base:common`：通用 `AppResult`、`AppError`、`UiText`、加载状态和组件生命周期基础模型。
 - `:base:io`：纯 Kotlin 文件工具模块骨架。
 - `:base:log`：日志基础模块起点。
@@ -199,6 +200,7 @@ App 级状态按生命周期语义分为三类：
 建议后续按需求逐步补充具体实现，不提前创建业务 API 或示例实现：
 
 - 继续把设置页新增入口保持在 `SettingsFeatureConfig` 和 app 组装层边界内。
+- 继续把 feature ViewModel 和旧 settings / locale / input 依赖逐步迁移到 Hilt，完成后删除 `AppDependencies`。
 - 主题和 AppScale 选择继续由 `:core:settings` 管理，后续需要跨进程或冷启动恢复时再补充持久化协议。
 - 具体页面布局策略由各 feature 自己实现，`core:adaptive` 只提供响应式判断能力。
 - 需要系统签名、系统应用或 Root 能力时，新增 `:base:system`，并为每个 API 标明权限前置条件和失败行为。

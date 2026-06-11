@@ -8,12 +8,12 @@ class HiltConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
         pluginManager.apply("com.google.devtools.ksp")
 
-        pluginManager.withPlugin("com.android.base") {
-            pluginManager.apply("com.google.dagger.hilt.android")
-            dependencies {
-                add("implementation", libs.findLibrary("hilt-android").get())
-                add("ksp", libs.findLibrary("hilt-compiler").get())
-            }
+        pluginManager.withPlugin("com.android.application") {
+            configureAndroidHilt()
+        }
+
+        pluginManager.withPlugin("com.android.library") {
+            configureAndroidHilt()
         }
 
         pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
@@ -21,6 +21,14 @@ class HiltConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findLibrary("hilt-android").get())
                 add("ksp", libs.findLibrary("hilt-compiler").get())
             }
+        }
+    }
+
+    private fun Project.configureAndroidHilt() {
+        pluginManager.apply("com.google.dagger.hilt.android")
+        dependencies {
+            add("implementation", libs.findLibrary("hilt-android").get())
+            add("ksp", libs.findLibrary("hilt-compiler").get())
         }
     }
 }

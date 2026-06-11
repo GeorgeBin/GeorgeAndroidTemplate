@@ -14,33 +14,80 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.georgebindragon.android.core.appconfig.AppConfigProvider
+import com.georgebindragon.android.core.auth.AuthRepository
 import com.georgebindragon.android.core.designsystem.theme.TemplateAppScale
 import com.georgebindragon.android.core.designsystem.systembar.enableImmersiveStatusBar
 import com.georgebindragon.android.core.designsystem.theme.TemplateTheme
 import com.georgebindragon.android.core.designsystem.theme.TemplateThemeMode
 import com.georgebindragon.android.core.input.focus.AppInteractionMode
+import com.georgebindragon.android.core.input.focus.InteractionModeManager
+import com.georgebindragon.android.core.input.focus.SetInteractionModeUseCase
+import com.georgebindragon.android.core.locale.LanguageManager
+import com.georgebindragon.android.core.locale.SetAppLanguageUseCase
+import com.georgebindragon.android.core.permission.PermissionIntentFactory
+import com.georgebindragon.android.core.permission.PermissionRepository
+import com.georgebindragon.android.core.privacy.PrivacyRepository
 import com.georgebindragon.android.core.settings.AppScale
 import com.georgebindragon.android.core.settings.PageOrientation
+import com.georgebindragon.android.core.settings.ThemeSettingsRepository
 import com.georgebindragon.android.core.settings.ThemeMode
+import com.georgebindragon.android.core.startup.StartupCoordinator
 import com.jakewharton.processphoenix.ProcessPhoenix
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var appConfigProvider: AppConfigProvider
+
+    @Inject
+    lateinit var startupCoordinator: StartupCoordinator
+
+    @Inject
+    lateinit var privacyRepository: PrivacyRepository
+
+    @Inject
+    lateinit var permissionRepository: PermissionRepository
+
+    @Inject
+    lateinit var permissionIntentFactory: PermissionIntentFactory
+
+    @Inject
+    lateinit var authRepository: AuthRepository
+
+    @Inject
+    lateinit var themeSettingsRepository: ThemeSettingsRepository
+
+    @Inject
+    lateinit var interactionModeManager: InteractionModeManager
+
+    @Inject
+    lateinit var setInteractionModeUseCase: SetInteractionModeUseCase
+
+    @Inject
+    lateinit var languageManager: LanguageManager
+
+    @Inject
+    lateinit var setAppLanguageUseCase: SetAppLanguageUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableImmersiveStatusBar()
-        AppDependencies.languageManager.refreshLanguage()
+        languageManager.refreshLanguage()
         val packageName = applicationContext.packageName
         val versionName = packageManager.getPackageInfo(packageName, 0).versionName ?: "unknown"
         setContent {
             val coroutineScope = rememberCoroutineScope()
-            val themeMode by AppDependencies.themeSettingsRepository.themeMode.collectAsState()
-            val appScale by AppDependencies.themeSettingsRepository.appScale.collectAsState()
-            val pageOrientation by AppDependencies.themeSettingsRepository.pageOrientation.collectAsState()
-            val expertMode by AppDependencies.themeSettingsRepository.expertMode.collectAsState()
-            val interactionMode by AppDependencies.interactionModeManager.interactionMode.collectAsState()
-            val language by AppDependencies.languageManager.currentLanguage.collectAsState()
+            val themeMode by themeSettingsRepository.themeMode.collectAsState()
+            val appScale by themeSettingsRepository.appScale.collectAsState()
+            val pageOrientation by themeSettingsRepository.pageOrientation.collectAsState()
+            val expertMode by themeSettingsRepository.expertMode.collectAsState()
+            val interactionMode by interactionModeManager.interactionMode.collectAsState()
+            val language by languageManager.currentLanguage.collectAsState()
 
             LaunchedEffect(pageOrientation) {
                 requestedOrientation = toRequestedOrientation(pageOrientation)
@@ -57,41 +104,47 @@ class MainActivity : AppCompatActivity() {
                     themeMode = themeMode,
                     onThemeModeChange = { mode ->
                         coroutineScope.launch {
-                            AppDependencies.themeSettingsRepository.setThemeMode(mode)
+                            themeSettingsRepository.setThemeMode(mode)
                         }
                     },
                     appScale = appScale,
                     onAppScaleChange = { scale ->
                         coroutineScope.launch {
-                            AppDependencies.themeSettingsRepository.setAppScale(scale)
+                            themeSettingsRepository.setAppScale(scale)
                         }
                     },
                     pageOrientation = pageOrientation,
                     onPageOrientationChange = { orientation ->
                         coroutineScope.launch {
-                            AppDependencies.themeSettingsRepository.setPageOrientation(orientation)
+                            themeSettingsRepository.setPageOrientation(orientation)
                         }
                     },
                     expertMode = expertMode,
                     onExpertModeChange = { enabled ->
                         coroutineScope.launch {
-                            AppDependencies.themeSettingsRepository.setExpertMode(enabled)
+                            themeSettingsRepository.setExpertMode(enabled)
                         }
                     },
                     interactionMode = interactionMode,
                     onInteractionModeChange = { mode ->
                         coroutineScope.launch {
-                            AppDependencies.setInteractionModeUseCase(mode)
+                            setInteractionModeUseCase(mode)
                         }
                     },
-                    supportedLanguages = AppDependencies.languageManager.supportedLanguages,
+                    supportedLanguages = languageManager.supportedLanguages,
                     language = language,
                     onLanguageChange = { language ->
-                        AppDependencies.setAppLanguageUseCase(language)
+                        setAppLanguageUseCase(language)
                     },
                     onExitClick = { finishAffinity() },
                     onRestartClick = { ProcessPhoenix.triggerRebirth(this) },
                     modifier = Modifier.fillMaxSize(),
+                    appConfig = appConfigProvider.getConfig(),
+                    startupCoordinator = startupCoordinator,
+                    privacyRepository = privacyRepository,
+                    permissionRepository = permissionRepository,
+                    permissionIntentFactory = permissionIntentFactory,
+                    authRepository = authRepository,
                 )
             }
         }

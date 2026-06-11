@@ -150,13 +150,21 @@
 - 设置页根据 `SettingsFeatureConfig` 动态显示或隐藏语言、主题、字号、方向、专家模式、权限、隐私、关于、退出登录等入口。
 - 设置页新增隐私协议、关于和重启 App 入口回调，跨 feature 跳转仍由 app 层协调。
 - `SettingsScreen` 保持纯 UI 回调边界，不直接操作 DataStore 或语言底层 API。
+- 接入 Hilt 基础设施：
+  - `AppApplication` 增加 `@HiltAndroidApp`
+  - `MainActivity` 增加 `@AndroidEntryPoint`
+  - 新增 app 层 Hilt module，提供 AppConfig、DataStore、Privacy、Permission、Auth、Settings、Locale、Input 和 Startup 相关根依赖
+  - `MainActivity` 改为通过 Hilt 字段注入读取 Repository / UseCase
+  - `TemplateApp` 改为显式接收启动、隐私、权限和认证依赖，不再直接读取 `AppDependencies`
+  - 保留 `AppDependencies`，但停止启动时初始化，等待后续阶段继续迁移和删除
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
 
 目标文档中仍未完成或仅有占位的内容：
 
-- Hilt 接入与逐步替换 `AppDependencies`
+- feature ViewModel 的 `@HiltViewModel` 迁移
+- 彻底删除 `AppDependencies`
 - `core:time`
 - `core:timer`
 - `core:scheduler`
@@ -260,6 +268,21 @@ feature/settings/src/main/java/com/georgebindragon/android/feature/settings/Sett
 feature/settings/src/main/java/com/georgebindragon/android/feature/settings/SettingsScreen.kt
 feature/settings/src/main/res/values/strings.xml
 feature/settings/src/main/res/values-en/strings.xml
+```
+
+阶段 11 当前改动涉及文件：
+
+```text
+app/build.gradle.kts
+app/src/main/java/com/georgebindragon/android/app/AppApplication.kt
+app/src/main/java/com/georgebindragon/android/app/MainActivity.kt
+app/src/main/java/com/georgebindragon/android/app/TemplateApp.kt
+app/src/main/java/com/georgebindragon/android/app/di/AppModule.kt
+build-logic/convention/src/main/kotlin/com/georgebindragon/buildlogic/HiltConventionPlugin.kt
+docs/GOAL_PROGRESS.md
+docs/architecture.md
+gradle.properties
+gradle/libs.versions.toml
 ```
 
 ## 5. 已运行的验证命令及结果
@@ -410,6 +433,30 @@ git diff --check
 
 结果：成功。
 
+Hilt 接入阶段核心编译验证，已通过：
+
+```bash
+./gradlew :app:compileDebugKotlin --no-daemon
+```
+
+结果：成功。
+
+Hilt 接入阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
+Hilt 接入阶段单元测试验证，已通过：
+
+```bash
+./gradlew testDebugUnitTest --no-daemon
+```
+
+结果：成功。过程中仍有既有测试 fake store 的 unchecked cast warning，未导致失败。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
@@ -425,8 +472,9 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，如果阶段 10 已提交，则继续阶段 11：Hilt 接入；如果阶段 10 尚未提交，则先运行阶段验收命令并提交：
+确认工作区状态后，如果阶段 11 已提交，则继续阶段 12：时间能力接口；如果阶段 11 尚未提交，则先运行阶段验收命令并提交：
 
 ```bash
 ./gradlew assembleDebug --no-daemon
+./gradlew testDebugUnitTest --no-daemon
 ```

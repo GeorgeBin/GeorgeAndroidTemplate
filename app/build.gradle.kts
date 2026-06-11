@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter
 plugins {
     id("george.android.application")
     id("george.android.application.compose")
+    id("george.android.hilt")
 }
 
 // apk 打包：类型 + 文件命名 + 存储路径
