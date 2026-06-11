@@ -757,11 +757,43 @@ UI 组件完善阶段验收构建，已通过：
 
 结果：成功。
 
+最终清理验证，已通过：
+
+```bash
+./gradlew clean --no-daemon
+```
+
+结果：成功。
+
+最终验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
+最终单元测试，已通过：
+
+```bash
+./gradlew testDebugUnitTest --no-daemon
+```
+
+结果：成功。过程中仍有既有测试 fake store 的 unchecked cast warning，未导致失败。
+
+最终 lint，已通过：
+
+```bash
+./gradlew lintDebug --no-daemon
+```
+
+结果：成功。过程中出现 Java / JVM library 模块作为 Android lint 外部依赖未被分析的提示，包括 `:base:io`、`:base:shell`、`:base:network-tool`，未导致失败。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
 
-阶段 1-18 已按目标文档完成并通过阶段验收；仍需执行最终验收命令后再判断 goal 是否可标记为 complete。
+无技术阻塞。阶段 1-18 已按目标文档完成并通过阶段验收，最终验收命令已通过。
 
 ## 7. 下次恢复后第一步应该做什么
 
@@ -772,8 +804,10 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，如果阶段 18 已提交，则执行最终验收；如果阶段 18 尚未提交，则先运行阶段验收命令并提交：
+如果继续演进，下一步可从目标文档中未进入阶段实施清单的后续项中选择，例如：
 
-```bash
-./gradlew assembleDebug --no-daemon
-```
+- feature ViewModel 的 `@HiltViewModel` 继续迁移
+- 删除旧 `AppDependencies`
+- `feature:update`
+- DialogHost / ToastBridge
+- 真实业务模块插件化示例
