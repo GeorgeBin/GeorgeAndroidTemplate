@@ -11,6 +11,11 @@ import com.georgebindragon.android.core.input.focus.SetInteractionModeUseCase
 import com.georgebindragon.android.core.locale.AppCompatLanguageManager
 import com.georgebindragon.android.core.locale.LanguageManager
 import com.georgebindragon.android.core.locale.SetAppLanguageUseCase
+import com.georgebindragon.android.core.permission.AndroidPermissionChecker
+import com.georgebindragon.android.core.permission.AndroidPermissionIntentFactory
+import com.georgebindragon.android.core.permission.DataStorePermissionRepository
+import com.georgebindragon.android.core.permission.PermissionIntentFactory
+import com.georgebindragon.android.core.permission.PermissionRepository
 import com.georgebindragon.android.core.privacy.DataStorePrivacyRepository
 import com.georgebindragon.android.core.privacy.PrivacyRepository
 import com.georgebindragon.android.core.settings.DataStoreThemeSettingsRepository
@@ -47,6 +52,12 @@ object AppDependencies {
     lateinit var privacyRepository: PrivacyRepository
         private set
 
+    lateinit var permissionRepository: PermissionRepository
+        private set
+
+    lateinit var permissionIntentFactory: PermissionIntentFactory
+        private set
+
     lateinit var startupCoordinator: StartupCoordinator
         private set
 
@@ -54,9 +65,15 @@ object AppDependencies {
         keyValueStore = PreferencesKeyValueStore(context)
         appConfigProvider = DefaultAppConfigProvider()
         privacyRepository = DataStorePrivacyRepository(keyValueStore)
+        permissionRepository = DataStorePermissionRepository(
+            keyValueStore = keyValueStore,
+            permissionChecker = AndroidPermissionChecker(context.applicationContext),
+        )
+        permissionIntentFactory = AndroidPermissionIntentFactory(context.applicationContext)
         startupCoordinator = DefaultStartupCoordinator(
             appConfigProvider = appConfigProvider,
             privacyRepository = privacyRepository,
+            permissionRepository = permissionRepository,
         )
         themeSettingsRepository = DataStoreThemeSettingsRepository(
             keyValueStore = keyValueStore,

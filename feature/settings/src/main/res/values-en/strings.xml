@@ -24,5 +24,6 @@
     <string name="settings_language_system">System</string>
     <string name="settings_language_simplified_chinese">Simplified Chinese</string>
     <string name="settings_language_english">English</string>
+    <string name="settings_permission_management">Permission management</string>
     <string name="settings_back_home">Back home</string>
 </resources>

@@ -85,6 +85,7 @@ include(
     ":core:ui",
     ":feature:home",
     ":feature:main",
+    ":feature:permission",
     ":feature:privacy",
     ":feature:settings",
 )

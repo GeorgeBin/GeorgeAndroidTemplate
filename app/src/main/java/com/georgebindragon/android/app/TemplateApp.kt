@@ -24,6 +24,8 @@ import com.georgebindragon.android.core.startup.StartupDestination
 import com.georgebindragon.android.core.ui.focus.ProvideAppInteractionMode
 import com.georgebindragon.android.feature.home.homeScreen
 import com.georgebindragon.android.feature.main.MainShellRoute
+import com.georgebindragon.android.feature.permission.permissionOverviewScreen
+import com.georgebindragon.android.feature.permission.permissionRequestScreen
 import com.georgebindragon.android.feature.privacy.privacyScreen
 import com.georgebindragon.android.feature.settings.settingsScreen
 
@@ -75,7 +77,7 @@ fun TemplateApp(
                 privacyConfig = appConfig.privacy,
                 privacyRepository = AppDependencies.privacyRepository,
                 onAccepted = {
-                    rootNavController.navigate(RootRoute.Main) {
+                    rootNavController.navigate(RootRoute.Startup) {
                         popUpTo(StartupNavigationRoute.Privacy) {
                             inclusive = true
                         }
@@ -84,12 +86,36 @@ fun TemplateApp(
                 },
                 onRejected = onExitClick,
             )
-            composable(StartupNavigationRoute.PermissionOverview) {
-                Text(text = "权限总览")
-            }
-            composable(StartupNavigationRoute.PermissionRequest) {
-                Text(text = "权限申请")
-            }
+            permissionOverviewScreen(
+                permissionConfig = appConfig.permission,
+                permissionRepository = AppDependencies.permissionRepository,
+                onContinueRequest = {
+                    rootNavController.navigate(StartupNavigationRoute.PermissionRequest) {
+                        launchSingleTop = true
+                    }
+                },
+                onComplete = {
+                    rootNavController.navigate(RootRoute.Main) {
+                        popUpTo(StartupNavigationRoute.PermissionOverview) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+            )
+            permissionRequestScreen(
+                permissionConfig = appConfig.permission,
+                permissionRepository = AppDependencies.permissionRepository,
+                permissionIntentFactory = AppDependencies.permissionIntentFactory,
+                onComplete = {
+                    rootNavController.navigate(RootRoute.Main) {
+                        popUpTo(StartupNavigationRoute.PermissionOverview) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+            )
             composable(StartupNavigationRoute.Login) {
                 Text(text = "登录")
             }
@@ -114,6 +140,11 @@ fun TemplateApp(
                     onLanguageChange = onLanguageChange,
                     onExitClick = onExitClick,
                     onRestartClick = onRestartClick,
+                    onPermissionClick = {
+                        rootNavController.navigate(StartupNavigationRoute.PermissionOverview) {
+                            launchSingleTop = true
+                        }
+                    },
                 )
             }
         }
@@ -148,6 +179,7 @@ private fun MainGraph(
     onLanguageChange: (AppLanguage) -> Unit,
     onExitClick: () -> Unit,
     onRestartClick: () -> Unit,
+    onPermissionClick: () -> Unit,
 ) {
     val mainNavController = rememberNavController()
     val visibleTabs = remember(appConfig.main.tabs) {
@@ -208,6 +240,7 @@ private fun MainGraph(
                         restoreState = true
                     }
                 },
+                onPermissionClick = onPermissionClick,
             )
         }
     }

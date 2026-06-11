@@ -2,6 +2,8 @@ package com.georgebindragon.android.core.appconfig
 
 import com.georgebindragon.android.base.common.UiText
 import com.georgebindragon.android.core.permission.AppPermission
+import com.georgebindragon.android.core.permission.AppPermissionDeclaration
+import com.georgebindragon.android.core.permission.PermissionRequestTiming
 
 data class AppConfig(
     val privacy: PrivacyFeatureConfig = PrivacyFeatureConfig(),
@@ -21,6 +23,10 @@ data class PrivacyFeatureConfig(
 data class PermissionFeatureConfig(
     val enabled: Boolean = true,
     val showOverviewOnFirstLaunch: Boolean = true,
+    val overviewVersion: Int = 1,
+    val allowSkipOptional: Boolean = true,
+    val allowSkipRequired: Boolean = false,
+    val declarations: List<AppPermissionDeclaration> = DefaultPermissionDeclarations,
 )
 
 data class AuthFeatureConfig(
@@ -84,5 +90,15 @@ val DefaultTabs: List<TabConfig> = listOf(
         title = UiText.Plain("设置"),
         icon = AppIcon.Settings,
         order = 10,
+    ),
+)
+
+val DefaultPermissionDeclarations: List<AppPermissionDeclaration> = listOf(
+    AppPermissionDeclaration(
+        permission = AppPermission.Notification,
+        title = UiText.Plain("通知权限"),
+        description = UiText.Plain("用于展示应用运行状态、提醒和后台任务通知。"),
+        required = false,
+        requestTiming = PermissionRequestTiming.OnStartup,
     ),
 )
