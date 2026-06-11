@@ -174,6 +174,7 @@ App 级状态按生命周期语义分为三类：
 - `:base:log`：日志基础模块起点。
 - `:core:appconfig`：AppConfig 配置中心，提供启动、主页面 Tab、设置入口和业务模块开关的默认配置。
 - `:core:auth`：登录态、Session、游客模式、登录和退出登录状态持久化能力。
+- `:core:boot`：开机广播和开机启动处理接口骨架。
 - `:core:model`：共享模型。
 - `:core:adaptive`：竖屏、横屏、折叠屏和 WindowSizeClass 响应式判断能力。
 - `:core:data`：数据仓库抽象和当前静态数据实现。
@@ -181,17 +182,20 @@ App 级状态按生命周期语义分为三类：
 - `:core:datastore`：KV、Preferences、Proto DataStore 和轻量状态持久化边界。
 - `:core:designsystem`：Compose 主题和设计系统起点。
 - `:core:input`：按键、遥控器、D-Pad、键盘输入抽象。
+- `:core:lifecycle`：App 启动来源、前后台状态和生命周期观察接口骨架。
 - `:core:locale`：语言切换、Locale 解析和应用级语言状态。
 - `:core:navigation`：Root、Startup、Main 和 Tab 相关路由常量与导航扩展。
 - `:core:network`：网络基础设施聚合模块，当前 HTTP 能力放在 `http` 包下。
 - `:core:permission`：权限模型、权限声明、状态检查、特殊权限设置跳转和权限 gate 持久化状态。
 - `:core:privacy`：隐私协议状态、版本判断和同意记录持久化能力。
+- `:core:service`：前台服务控制器和状态模型骨架。
 - `:core:settings`：用户设置状态起点，当前主题和 AppScale 选择为运行期内存态。
 - `:core:startup`：启动目的地和启动编排接口骨架，当前根据隐私、权限和认证状态决定进入 Privacy、Permission、Login 或 Main。
 - `:core:storage`：Android 文件、目录、缓存、导入导出和下载文件边界骨架。
 - `:core:scheduler`：App 级调度接口骨架，当前提供 `AlarmManager` 指定时间点和重复间隔调度封装。
 - `:core:time`：App 级时间能力接口，当前提供系统时间、开机时长、时区、日期和时分秒状态流；NTP、HTTP 和私有校准源后续再接入。
 - `:core:timer`：共享定时器接口骨架，当前按相同 interval 复用 ticker，并在无订阅者时停止上游。
+- `:core:update`：更新检查、下载、安装和状态模型接口骨架。
 - `:core:ui`：通用 Compose 组件、Modifier、焦点和输入相关 UI 能力。
 - `:feature:auth`：登录 gate 页面，提供账号密码登录、游客模式入口和登录成功跳转。
 - `:feature:home`：首页 feature。

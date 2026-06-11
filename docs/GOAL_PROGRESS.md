@@ -182,6 +182,11 @@
   - `ScheduleTime`
   - `AlarmManagerScheduler`
 - `AlarmManagerScheduler` 当前支持指定时间点、延迟时间和重复间隔调度，以及按 id 取消。
+- 新增常用运行期能力接口骨架：
+  - `core:lifecycle`：`AppLifecycleObserver`、`AppForegroundState`、`AppStartSource`
+  - `core:boot`：`BootReceiver`、`BootStartHandler`
+  - `core:service`：`ForegroundServiceController`、`ForegroundServiceState`
+  - `core:update`：`UpdateChecker`、`UpdateDownloader`、`UpdateInstaller`、`UpdateState`
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
@@ -190,16 +195,13 @@
 
 - feature ViewModel 的 `@HiltViewModel` 迁移
 - 彻底删除 `AppDependencies`
-- `core:boot`
-- `core:service`
-- `core:update` 和 `feature:update`
 - `base:shell`
 - `base:media`
 - `base:network-tool`
 - `core:feedback`
 - `core:notification`
 - `core:system` 和 `feature:system-debug`
-- `core:lifecycle`
+- `feature:update`
 - 后续 UI 能力完善，包括通用列表、状态页、DialogHost、ToastBridge、跑马灯文字等
 - 真实业务模块插件化示例
 - Hilt、Repository、UDF/MVI-like 状态流的全面落地
@@ -338,6 +340,31 @@ core/timer/src/main/java/com/georgebindragon/android/core/timer/SharedTimerManag
 core/timer/src/main/java/com/georgebindragon/android/core/timer/TimerSource.kt
 core/timer/src/main/java/com/georgebindragon/android/core/timer/TimerTick.kt
 core/timer/src/test/java/com/georgebindragon/android/core/timer/SharedTimerManagerTest.kt
+docs/GOAL_PROGRESS.md
+docs/architecture.md
+settings.gradle.kts
+```
+
+阶段 14 当前改动涉及文件：
+
+```text
+core/boot/build.gradle.kts
+core/boot/src/main/AndroidManifest.xml
+core/boot/src/main/java/com/georgebindragon/android/core/boot/BootReceiver.kt
+core/boot/src/main/java/com/georgebindragon/android/core/boot/BootStartHandler.kt
+core/lifecycle/build.gradle.kts
+core/lifecycle/src/main/AndroidManifest.xml
+core/lifecycle/src/main/java/com/georgebindragon/android/core/lifecycle/AppForegroundState.kt
+core/lifecycle/src/main/java/com/georgebindragon/android/core/lifecycle/AppLifecycleObserver.kt
+core/lifecycle/src/main/java/com/georgebindragon/android/core/lifecycle/AppStartSource.kt
+core/service/build.gradle.kts
+core/service/src/main/AndroidManifest.xml
+core/service/src/main/java/com/georgebindragon/android/core/service/ForegroundServiceController.kt
+core/service/src/main/java/com/georgebindragon/android/core/service/ForegroundServiceState.kt
+core/update/build.gradle.kts
+core/update/src/main/AndroidManifest.xml
+core/update/src/main/java/com/georgebindragon/android/core/update/UpdateContracts.kt
+core/update/src/main/java/com/georgebindragon/android/core/update/UpdateState.kt
 docs/GOAL_PROGRESS.md
 docs/architecture.md
 settings.gradle.kts
@@ -547,6 +574,22 @@ Hilt 接入阶段单元测试验证，已通过：
 
 结果：成功。
 
+常用运行期能力阶段核心验证，已通过：
+
+```bash
+./gradlew :core:lifecycle:compileDebugKotlin :core:boot:compileDebugKotlin :core:service:compileDebugKotlin :core:update:compileDebugKotlin --no-daemon
+```
+
+结果：成功。
+
+常用运行期能力阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
@@ -562,7 +605,7 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，如果阶段 13 已提交，则继续阶段 14：常用功能接口；如果阶段 13 尚未提交，则先运行阶段验收命令并提交：
+确认工作区状态后，如果阶段 14 已提交，则继续阶段 15：常用工具接口；如果阶段 14 尚未提交，则先运行阶段验收命令并提交：
 
 ```bash
 ./gradlew assembleDebug --no-daemon
