@@ -83,6 +83,7 @@ include(
     ":core:settings",
     ":core:startup",
     ":core:storage",
+    ":core:time",
     ":core:ui",
     ":feature:home",
     ":feature:auth",

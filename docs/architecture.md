@@ -189,6 +189,7 @@ App 级状态按生命周期语义分为三类：
 - `:core:settings`：用户设置状态起点，当前主题和 AppScale 选择为运行期内存态。
 - `:core:startup`：启动目的地和启动编排接口骨架，当前根据隐私、权限和认证状态决定进入 Privacy、Permission、Login 或 Main。
 - `:core:storage`：Android 文件、目录、缓存、导入导出和下载文件边界骨架。
+- `:core:time`：App 级时间能力接口，当前提供系统时间、开机时长、时区、日期和时分秒状态流；NTP、HTTP 和私有校准源后续再接入。
 - `:core:ui`：通用 Compose 组件、Modifier、焦点和输入相关 UI 能力。
 - `:feature:auth`：登录 gate 页面，提供账号密码登录、游客模式入口和登录成功跳转。
 - `:feature:home`：首页 feature。
@@ -201,6 +202,7 @@ App 级状态按生命周期语义分为三类：
 
 - 继续把设置页新增入口保持在 `SettingsFeatureConfig` 和 app 组装层边界内。
 - 继续把 feature ViewModel 和旧 settings / locale / input 依赖逐步迁移到 Hilt，完成后删除 `AppDependencies`。
+- 后续扩展 `:core:time` 的 NTP、HTTP 或私有接口校准策略时，应保持校准来源和失败原因显式建模。
 - 主题和 AppScale 选择继续由 `:core:settings` 管理，后续需要跨进程或冷启动恢复时再补充持久化协议。
 - 具体页面布局策略由各 feature 自己实现，`core:adaptive` 只提供响应式判断能力。
 - 需要系统签名、系统应用或 Root 能力时，新增 `:base:system`，并为每个 API 标明权限前置条件和失败行为。

@@ -157,6 +157,18 @@
   - `MainActivity` 改为通过 Hilt 字段注入读取 Repository / UseCase
   - `TemplateApp` 改为显式接收启动、隐私、权限和认证依赖，不再直接读取 `AppDependencies`
   - 保留 `AppDependencies`，但停止启动时初始化，等待后续阶段继续迁移和删除
+- 新增 `core:time` 时间能力接口和基础实现：
+  - `AppTimeRepository`
+  - `AppTimeState`
+  - `TimeCalibrationStrategy`
+  - `TimeCalibrationResult`
+  - `TimeChangeObserver`
+  - `SystemTimeProvider`
+  - `AndroidSystemTimeProvider`
+  - `CalibratedTimeProvider`
+  - `DefaultAppTimeRepository`
+- `core:time` 当前支持系统时间、开机时长、时区、日期和时分秒 `StateFlow`。
+- `core:time` 预留 NTP、HTTP 和私有接口校准策略结果模型，尚不实现外部校准源。
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
@@ -165,7 +177,6 @@
 
 - feature ViewModel 的 `@HiltViewModel` 迁移
 - 彻底删除 `AppDependencies`
-- `core:time`
 - `core:timer`
 - `core:scheduler`
 - `core:boot`
@@ -283,6 +294,22 @@ docs/GOAL_PROGRESS.md
 docs/architecture.md
 gradle.properties
 gradle/libs.versions.toml
+```
+
+阶段 12 当前改动涉及文件：
+
+```text
+core/time/build.gradle.kts
+core/time/src/main/AndroidManifest.xml
+core/time/src/main/java/com/georgebindragon/android/core/time/AppTimeRepository.kt
+core/time/src/main/java/com/georgebindragon/android/core/time/AppTimeState.kt
+core/time/src/main/java/com/georgebindragon/android/core/time/DefaultAppTimeRepository.kt
+core/time/src/main/java/com/georgebindragon/android/core/time/SystemTimeProvider.kt
+core/time/src/main/java/com/georgebindragon/android/core/time/TimeCalibration.kt
+core/time/src/test/java/com/georgebindragon/android/core/time/DefaultAppTimeRepositoryTest.kt
+docs/GOAL_PROGRESS.md
+docs/architecture.md
+settings.gradle.kts
 ```
 
 ## 5. 已运行的验证命令及结果
@@ -457,6 +484,22 @@ Hilt 接入阶段单元测试验证，已通过：
 
 结果：成功。过程中仍有既有测试 fake store 的 unchecked cast warning，未导致失败。
 
+时间能力阶段核心验证，已通过：
+
+```bash
+./gradlew :core:time:testDebugUnitTest :core:time:compileDebugKotlin --no-daemon
+```
+
+结果：成功。
+
+时间能力阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
@@ -472,9 +515,8 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，如果阶段 11 已提交，则继续阶段 12：时间能力接口；如果阶段 11 尚未提交，则先运行阶段验收命令并提交：
+确认工作区状态后，如果阶段 12 已提交，则继续阶段 13：共享定时器与 AlarmManager 调度接口；如果阶段 12 尚未提交，则先运行阶段验收命令并提交：
 
 ```bash
 ./gradlew assembleDebug --no-daemon
-./gradlew testDebugUnitTest --no-daemon
 ```
