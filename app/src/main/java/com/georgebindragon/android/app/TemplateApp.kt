@@ -157,6 +157,11 @@ fun TemplateApp(
                             launchSingleTop = true
                         }
                     },
+                    onPrivacyClick = {
+                        rootNavController.navigate(StartupNavigationRoute.Privacy) {
+                            launchSingleTop = true
+                        }
+                    },
                     onLogoutClick = {
                         scope.launch {
                             AppDependencies.authRepository.logout()
@@ -203,6 +208,7 @@ private fun MainGraph(
     onExitClick: () -> Unit,
     onRestartClick: () -> Unit,
     onPermissionClick: () -> Unit,
+    onPrivacyClick: () -> Unit,
     onLogoutClick: () -> Unit,
 ) {
     val mainNavController = rememberNavController()
@@ -242,6 +248,7 @@ private fun MainGraph(
                 onRestartClick = onRestartClick,
             )
             settingsScreen(
+                settingsConfig = appConfig.settings,
                 themeMode = themeMode,
                 onThemeModeChange = onThemeModeChange,
                 appScale = appScale,
@@ -265,7 +272,10 @@ private fun MainGraph(
                     }
                 },
                 onPermissionClick = onPermissionClick,
+                onPrivacyClick = onPrivacyClick,
+                onAboutClick = {},
                 onLogoutClick = onLogoutClick,
+                onRestartClick = onRestartClick,
             )
         }
     }

@@ -44,6 +44,7 @@
 - `f7ed72c feat: add startup coordinator skeleton`
 - `a5ac4bd feat: add privacy agreement gate`
 - `fc31a98 feat: add permission overview gate`
+- `9d86cc3 feat: add optional auth gate`
 
 已完成的阶段性内容：
 
@@ -146,13 +147,15 @@
 - `StartupCoordinator` 已在隐私和权限 gate 之后，根据 `AppConfig.auth` 和登录状态决定进入 Login 或 Main。
 - 登录页支持账号密码登录、登录中状态、错误提示、游客模式配置和登录成功进入 Main。
 - 设置页新增退出登录入口，退出后回到 Startup 流程重新解析。
+- 设置页根据 `SettingsFeatureConfig` 动态显示或隐藏语言、主题、字号、方向、专家模式、权限、隐私、关于、退出登录等入口。
+- 设置页新增隐私协议、关于和重启 App 入口回调，跨 feature 跳转仍由 app 层协调。
+- `SettingsScreen` 保持纯 UI 回调边界，不直接操作 DataStore 或语言底层 API。
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
 
 目标文档中仍未完成或仅有占位的内容：
 
-- 设置页根据 `SettingsFeatureConfig` 动态显示/隐藏入口
 - Hilt 接入与逐步替换 `AppDependencies`
 - `core:time`
 - `core:timer`
@@ -243,6 +246,20 @@ settings.gradle.kts
 
 ```text
 docs/GOAL_PROGRESS.md
+```
+
+阶段 10 当前改动涉及文件：
+
+```text
+app/src/main/java/com/georgebindragon/android/app/TemplateApp.kt
+docs/GOAL_PROGRESS.md
+docs/architecture.md
+feature/settings/build.gradle.kts
+feature/settings/src/main/java/com/georgebindragon/android/feature/settings/SettingsNavigation.kt
+feature/settings/src/main/java/com/georgebindragon/android/feature/settings/SettingsRoute.kt
+feature/settings/src/main/java/com/georgebindragon/android/feature/settings/SettingsScreen.kt
+feature/settings/src/main/res/values/strings.xml
+feature/settings/src/main/res/values-en/strings.xml
 ```
 
 ## 5. 已运行的验证命令及结果
@@ -369,6 +386,30 @@ git diff --check
 
 备注：lint 过程中出现过 `:base:io` 作为 Java library 外部依赖未被 Android lint 分析的提示，但未导致失败。
 
+设置页配置化阶段核心编译验证，已通过：
+
+```bash
+./gradlew :feature:settings:compileDebugKotlin :app:compileDebugKotlin --no-daemon
+```
+
+结果：成功。
+
+设置页配置化阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
+设置页配置化阶段全量单测和 lint，已通过：
+
+```bash
+./gradlew testDebugUnitTest lintDebug --no-daemon
+```
+
+结果：成功。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
@@ -384,10 +425,8 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，从设置页配置化阶段继续：
+确认工作区状态后，如果阶段 10 已提交，则继续阶段 11：Hilt 接入；如果阶段 10 尚未提交，则先运行阶段验收命令并提交：
 
-- 让设置页根据 `SettingsFeatureConfig` 动态显示或隐藏语言、主题、字号、方向、专家模式、权限、隐私、关于、退出登录、重启等入口。
-- 保持 SettingsScreen 不直接操作 DataStore 或语言底层 API。
-- 继续沿用现有 Repository / UseCase 回调边界。
-
-开始改动前应重新检查 `docs/codex_Goal.md` 中阶段 10 的要求，并确认当前代码仍以登录 gate 提交之后的状态为基础。
+```bash
+./gradlew assembleDebug --no-daemon
+```

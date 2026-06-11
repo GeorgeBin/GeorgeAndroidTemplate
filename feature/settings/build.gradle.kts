@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:appconfig"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:input"))
     implementation(project(":core:locale"))

@@ -2,6 +2,7 @@ package com.georgebindragon.android.feature.settings
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.georgebindragon.android.core.appconfig.SettingsFeatureConfig
 import com.georgebindragon.android.core.input.focus.AppInteractionMode
 import com.georgebindragon.android.core.locale.AppLanguage
 import com.georgebindragon.android.core.settings.AppScale
@@ -10,6 +11,7 @@ import com.georgebindragon.android.core.settings.ThemeMode
 
 @Composable
 fun SettingsRoute(
+    settingsConfig: SettingsFeatureConfig,
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
     appScale: AppScale,
@@ -25,10 +27,14 @@ fun SettingsRoute(
     onLanguageChange: (AppLanguage) -> Unit,
     onBackHomeClick: () -> Unit,
     onPermissionClick: () -> Unit,
+    onPrivacyClick: () -> Unit,
+    onAboutClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    onRestartClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SettingsScreen(
+        settingsConfig = settingsConfig,
         themeMode = themeMode,
         onThemeModeChange = onThemeModeChange,
         appScale = appScale,
@@ -44,7 +50,10 @@ fun SettingsRoute(
         onLanguageChange = onLanguageChange,
         onBackHomeClick = onBackHomeClick,
         onPermissionClick = onPermissionClick,
+        onPrivacyClick = onPrivacyClick,
+        onAboutClick = onAboutClick,
         onLogoutClick = onLogoutClick,
+        onRestartClick = onRestartClick,
         modifier = modifier,
     )
 }

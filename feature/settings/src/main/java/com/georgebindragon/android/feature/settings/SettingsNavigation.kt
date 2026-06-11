@@ -2,6 +2,7 @@ package com.georgebindragon.android.feature.settings
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.georgebindragon.android.core.appconfig.SettingsFeatureConfig
 import com.georgebindragon.android.core.input.focus.AppInteractionMode
 import com.georgebindragon.android.core.locale.AppLanguage
 import com.georgebindragon.android.core.navigation.MainRoute
@@ -10,6 +11,7 @@ import com.georgebindragon.android.core.settings.PageOrientation
 import com.georgebindragon.android.core.settings.ThemeMode
 
 fun NavGraphBuilder.settingsScreen(
+    settingsConfig: SettingsFeatureConfig,
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
     appScale: AppScale,
@@ -25,10 +27,14 @@ fun NavGraphBuilder.settingsScreen(
     onLanguageChange: (AppLanguage) -> Unit,
     onBackHomeClick: () -> Unit,
     onPermissionClick: () -> Unit,
+    onPrivacyClick: () -> Unit,
+    onAboutClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    onRestartClick: () -> Unit,
 ) {
     composable(MainRoute.Settings) {
         SettingsRoute(
+            settingsConfig = settingsConfig,
             themeMode = themeMode,
             onThemeModeChange = onThemeModeChange,
             appScale = appScale,
@@ -44,7 +50,10 @@ fun NavGraphBuilder.settingsScreen(
             onLanguageChange = onLanguageChange,
             onBackHomeClick = onBackHomeClick,
             onPermissionClick = onPermissionClick,
+            onPrivacyClick = onPrivacyClick,
+            onAboutClick = onAboutClick,
             onLogoutClick = onLogoutClick,
+            onRestartClick = onRestartClick,
         )
     }
 }

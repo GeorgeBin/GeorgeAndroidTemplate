@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.georgebindragon.android.core.appconfig.SettingsFeatureConfig
 import com.georgebindragon.android.core.designsystem.theme.TemplateDimensions
 import com.georgebindragon.android.core.designsystem.theme.TemplateTheme
 import com.georgebindragon.android.core.input.focus.AppInteractionMode
@@ -33,6 +34,7 @@ import com.georgebindragon.android.core.ui.focus.ProvideAppInteractionMode
 
 @Composable
 internal fun SettingsScreen(
+    settingsConfig: SettingsFeatureConfig,
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
     appScale: AppScale,
@@ -48,7 +50,10 @@ internal fun SettingsScreen(
     onLanguageChange: (AppLanguage) -> Unit,
     onBackHomeClick: () -> Unit,
     onPermissionClick: () -> Unit,
+    onPrivacyClick: () -> Unit,
+    onAboutClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    onRestartClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val dimensions = TemplateDimensions.current
@@ -70,41 +75,35 @@ internal fun SettingsScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground,
         )
-        SettingsSwitchRow(
-            label = stringResource(R.string.settings_expert_mode_title),
-            checked = expertMode,
-            onCheckedChange = onExpertModeChange,
-        )
-        Text(
-            text = stringResource(R.string.settings_theme_title),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        ThemeMode.entries.forEach { option ->
-            SettingsOptionRow(
-                label = option.label(),
-                selected = option == themeMode,
-                onClick = { onThemeModeChange(option) },
+        if (settingsConfig.showExpertMode) {
+            SettingsSwitchRow(
+                label = stringResource(R.string.settings_expert_mode_title),
+                checked = expertMode,
+                onCheckedChange = onExpertModeChange,
             )
         }
-        Text(
-            text = stringResource(R.string.settings_app_scale_title),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        AppScale.entries.forEach { option ->
-            SettingsOptionRow(
-                label = option.label(),
-                selected = option == appScale,
-                onClick = { onAppScaleChange(option) },
-            )
+        if (settingsConfig.showTheme) {
+            SettingsSectionTitle(text = stringResource(R.string.settings_theme_title))
+            ThemeMode.entries.forEach { option ->
+                SettingsOptionRow(
+                    label = option.label(),
+                    selected = option == themeMode,
+                    onClick = { onThemeModeChange(option) },
+                )
+            }
         }
-        if (expertMode) {
-            Text(
-                text = stringResource(R.string.settings_page_orientation_title),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
+        if (settingsConfig.showAppScale) {
+            SettingsSectionTitle(text = stringResource(R.string.settings_app_scale_title))
+            AppScale.entries.forEach { option ->
+                SettingsOptionRow(
+                    label = option.label(),
+                    selected = option == appScale,
+                    onClick = { onAppScaleChange(option) },
+                )
+            }
+        }
+        if (settingsConfig.showPageOrientation) {
+            SettingsSectionTitle(text = stringResource(R.string.settings_page_orientation_title))
             PageOrientation.entries.forEach { option ->
                 SettingsOptionRow(
                     label = option.label(),
@@ -112,11 +111,9 @@ internal fun SettingsScreen(
                     onClick = { onPageOrientationChange(option) },
                 )
             }
-            Text(
-                text = stringResource(R.string.settings_interaction_mode_title),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
+        }
+        if (expertMode) {
+            SettingsSectionTitle(text = stringResource(R.string.settings_interaction_mode_title))
             AppInteractionMode.entries.forEach { option ->
                 SettingsOptionRow(
                     label = option.label(),
@@ -124,11 +121,9 @@ internal fun SettingsScreen(
                     onClick = { onInteractionModeChange(option) },
                 )
             }
-            Text(
-                text = stringResource(R.string.settings_language_title),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
+        }
+        if (settingsConfig.showLanguage) {
+            SettingsSectionTitle(text = stringResource(R.string.settings_language_title))
             supportedLanguages.forEach { option ->
                 SettingsOptionRow(
                     label = option.label(),
@@ -137,16 +132,46 @@ internal fun SettingsScreen(
                 )
             }
         }
-        FocusableButton(onClick = onPermissionClick) {
-            Text(text = stringResource(R.string.settings_permission_management))
+        if (settingsConfig.showPermission) {
+            FocusableButton(onClick = onPermissionClick) {
+                Text(text = stringResource(R.string.settings_permission_management))
+            }
         }
-        FocusableButton(onClick = onLogoutClick) {
-            Text(text = stringResource(R.string.settings_logout))
+        if (settingsConfig.showPrivacy) {
+            FocusableButton(onClick = onPrivacyClick) {
+                Text(text = stringResource(R.string.settings_privacy))
+            }
+        }
+        if (settingsConfig.showAbout) {
+            FocusableButton(onClick = onAboutClick) {
+                Text(text = stringResource(R.string.settings_about))
+            }
+        }
+        if (settingsConfig.showLogout) {
+            FocusableButton(onClick = onLogoutClick) {
+                Text(text = stringResource(R.string.settings_logout))
+            }
+        }
+        FocusableButton(onClick = onRestartClick) {
+            Text(text = stringResource(R.string.settings_restart))
         }
         FocusableButton(onClick = onBackHomeClick) {
             Text(text = stringResource(R.string.settings_back_home))
         }
     }
+}
+
+@Composable
+private fun SettingsSectionTitle(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onBackground,
+    )
 }
 
 @Composable
@@ -269,6 +294,7 @@ private fun SettingsScreenPreview() {
     TemplateTheme {
         ProvideAppInteractionMode(mode = AppInteractionMode.Auto) {
             SettingsScreen(
+                settingsConfig = SettingsFeatureConfig(),
                 themeMode = ThemeMode.System,
                 onThemeModeChange = {},
                 appScale = AppScale.Standard,
@@ -284,7 +310,10 @@ private fun SettingsScreenPreview() {
                 onLanguageChange = {},
                 onBackHomeClick = {},
                 onPermissionClick = {},
+                onPrivacyClick = {},
+                onAboutClick = {},
                 onLogoutClick = {},
+                onRestartClick = {},
             )
         }
     }

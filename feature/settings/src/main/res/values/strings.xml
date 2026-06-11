@@ -25,6 +25,9 @@
     <string name="settings_language_simplified_chinese">简体中文</string>
     <string name="settings_language_english">English</string>
     <string name="settings_permission_management">权限管理</string>
+    <string name="settings_privacy">隐私协议</string>
+    <string name="settings_about">关于</string>
     <string name="settings_logout">退出登录</string>
+    <string name="settings_restart">重启 App</string>
     <string name="settings_back_home">返回首页</string>
 </resources>

@@ -146,7 +146,7 @@ UI 相关能力按三类拆分：
 
 - `core:designsystem` 定义主题、颜色、字体、尺寸和内容缩放如何作用于 UI。
 - `core:settings` 定义当前主题模式、AppScale、语言、缩放、专家模式等状态；当前主题和 AppScale 选择为运行期内存态，后续需要时再接持久化协议。
-- `feature:settings` 展示设置页面，允许用户修改主题和 AppScale。
+- `feature:settings` 展示设置页面，允许用户修改主题、AppScale、页面方向、交互模式和语言，并通过配置控制入口显隐。
 - `app` 读取设置状态，在顶层 `TemplateTheme` 或导航入口中真正启用。
 
 ## 生命周期状态
@@ -194,12 +194,12 @@ App 级状态按生命周期语义分为三类：
 - `:feature:main`：主页面壳和可配置底部 Tab 展示，不直接依赖具体业务 feature。
 - `:feature:permission`：权限总览和权限申请 gate 页面，支持普通权限申请、特殊权限设置跳转和可选权限跳过。
 - `:feature:privacy`：隐私协议 gate 页面，提供同意和不同意入口。
-- `:feature:settings`：设置页面起点，当前提供主题切换、权限管理和退出登录入口。
+- `:feature:settings`：设置页面起点，当前根据 `SettingsFeatureConfig` 显示语言、主题、字号、方向、专家模式、权限、隐私、关于、退出登录和重启入口；具体跨 feature 跳转由 `app` 组装层协调。
 
 建议后续按需求逐步补充具体实现，不提前创建业务 API 或示例实现：
 
-- 继续让设置页根据 `SettingsFeatureConfig` 动态显示或隐藏入口。
-- 主题和 AppScale 选择继续由 `:core:settings` 基于 `:core:datastore` 持久化。
+- 继续把设置页新增入口保持在 `SettingsFeatureConfig` 和 app 组装层边界内。
+- 主题和 AppScale 选择继续由 `:core:settings` 管理，后续需要跨进程或冷启动恢复时再补充持久化协议。
 - 具体页面布局策略由各 feature 自己实现，`core:adaptive` 只提供响应式判断能力。
 - 需要系统签名、系统应用或 Root 能力时，新增 `:base:system`，并为每个 API 标明权限前置条件和失败行为。
 - `:core:database` 先不启用 Room 插件和依赖，等出现真实数据库 schema、DAO 或迁移需求时再接入。
