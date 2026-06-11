@@ -11,6 +11,8 @@ import com.georgebindragon.android.core.input.focus.SetInteractionModeUseCase
 import com.georgebindragon.android.core.locale.AppCompatLanguageManager
 import com.georgebindragon.android.core.locale.LanguageManager
 import com.georgebindragon.android.core.locale.SetAppLanguageUseCase
+import com.georgebindragon.android.core.privacy.DataStorePrivacyRepository
+import com.georgebindragon.android.core.privacy.PrivacyRepository
 import com.georgebindragon.android.core.settings.DataStoreThemeSettingsRepository
 import com.georgebindragon.android.core.settings.ThemeSettingsRepository
 import com.georgebindragon.android.core.startup.DefaultStartupCoordinator
@@ -42,13 +44,20 @@ object AppDependencies {
     lateinit var appConfigProvider: AppConfigProvider
         private set
 
+    lateinit var privacyRepository: PrivacyRepository
+        private set
+
     lateinit var startupCoordinator: StartupCoordinator
         private set
 
     fun init(context: Context) {
         keyValueStore = PreferencesKeyValueStore(context)
         appConfigProvider = DefaultAppConfigProvider()
-        startupCoordinator = DefaultStartupCoordinator(appConfigProvider)
+        privacyRepository = DataStorePrivacyRepository(keyValueStore)
+        startupCoordinator = DefaultStartupCoordinator(
+            appConfigProvider = appConfigProvider,
+            privacyRepository = privacyRepository,
+        )
         themeSettingsRepository = DataStoreThemeSettingsRepository(
             keyValueStore = keyValueStore,
             scope = appScope,

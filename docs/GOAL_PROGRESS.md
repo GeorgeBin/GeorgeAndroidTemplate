@@ -1,6 +1,6 @@
 # Goal Progress
 
-更新时间：2026-06-09
+更新时间：2026-06-11
 
 ## 1. 当前 goal 内容
 
@@ -94,14 +94,28 @@
   - `DefaultStartupCoordinator`
 - RootNavHost 默认先进入 Startup，再由 `StartupCoordinator` 跳转 Main。
 - 预留 Privacy / Permission / Login 占位路由。
+- 新增 `core:privacy`：
+  - `PrivacyState`
+  - `PrivacyAcceptSource`
+  - `PrivacyRepository`
+  - `DataStorePrivacyRepository`
+- 新增 `feature:privacy`：
+  - `PrivacyRoute`
+  - `PrivacyScreen`
+  - `PrivacyViewModel`
+  - `PrivacyUiState`
+  - `PrivacyNavigation`
+- `StartupCoordinator` 已根据 `AppConfig.privacy` 和 `PrivacyRepository.shouldShowPrivacy(...)` 判断进入 Privacy 或 Main。
+- 首次启动会进入隐私协议页。
+- 同意后记录隐私协议版本、用户协议版本、同意时间和同意来源。
+- 不同意会调用 app 层退出回调。
+- 隐私协议版本或用户协议版本更新后会重新展示隐私协议页。
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
 
 目标文档中仍未完成或仅有占位的内容：
 
-- `core:privacy` 和 `feature:privacy`
-- 隐私协议首次启动、版本更新、同意记录和不同意退出逻辑
 - `core:permission` 的真实权限检查、特殊权限跳转、权限请求协议
 - `feature:permission`
 - `core:auth` 和 `feature:auth`
@@ -174,6 +188,19 @@ feature/main/src/main/java/com/georgebindragon/android/feature/main/MainNavigati
 feature/main/src/main/java/com/georgebindragon/android/feature/main/MainShellRoute.kt
 feature/main/src/main/java/com/georgebindragon/android/feature/main/MainShellScreen.kt
 feature/main/src/main/java/com/georgebindragon/android/feature/main/MainTabState.kt
+core/privacy/build.gradle.kts
+core/privacy/src/main/AndroidManifest.xml
+core/privacy/src/main/java/com/georgebindragon/android/core/privacy/DataStorePrivacyRepository.kt
+core/privacy/src/main/java/com/georgebindragon/android/core/privacy/PrivacyRepository.kt
+core/privacy/src/main/java/com/georgebindragon/android/core/privacy/PrivacyState.kt
+core/privacy/src/test/java/com/georgebindragon/android/core/privacy/DataStorePrivacyRepositoryTest.kt
+feature/privacy/build.gradle.kts
+feature/privacy/src/main/AndroidManifest.xml
+feature/privacy/src/main/java/com/georgebindragon/android/feature/privacy/PrivacyNavigation.kt
+feature/privacy/src/main/java/com/georgebindragon/android/feature/privacy/PrivacyRoute.kt
+feature/privacy/src/main/java/com/georgebindragon/android/feature/privacy/PrivacyScreen.kt
+feature/privacy/src/main/java/com/georgebindragon/android/feature/privacy/PrivacyUiState.kt
+feature/privacy/src/main/java/com/georgebindragon/android/feature/privacy/PrivacyViewModel.kt
 feature/settings/build.gradle.kts
 feature/settings/src/main/java/com/georgebindragon/android/feature/settings/SettingsNavigation.kt
 gradle/libs.versions.toml
@@ -228,15 +255,45 @@ docs/GOAL_PROGRESS.md
 
 结果：成功。
 
+恢复执行后新增验证，已通过：
+
+```bash
+./gradlew :core:privacy:testDebugUnitTest :core:startup:testDebugUnitTest assembleDebug --no-daemon
+```
+
+结果：成功。
+
+恢复执行后再次全量验证，已通过：
+
+```bash
+./gradlew testDebugUnitTest lintDebug --no-daemon
+```
+
+结果：成功。
+
+提交前格式检查，已通过：
+
+```bash
+git diff --check
+```
+
+结果：成功，无空白错误。
+
+阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
 备注：lint 过程中出现过 `:base:io` 作为 Java library 外部依赖未被 Android lint 分析的提示，但未导致失败。
 
 ## 6. 当前阻塞点
 
 无技术阻塞。
 
-当前暂停原因：用户明确要求暂停当前 goal 的实际执行，并记录进度。
-
-当前 goal 未完成，不应标记为 complete。也不满足 blocked 条件，不应标记为 blocked。
+当前 goal 未完成，不应标记为 complete。
 
 ## 7. 下次恢复后第一步应该做什么
 
@@ -247,12 +304,11 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，从隐私协议 gate 阶段继续：
+确认工作区状态后，从权限总览与申请 gate 阶段继续：
 
-- 新增 `core:privacy`
-- 新增 `feature:privacy`
-- 定义 `PrivacyRepository`
-- 建立隐私协议页面、同意/不同意回调和导航注册
-- 让 `StartupCoordinator` 根据隐私配置和隐私状态决定是否进入 `StartupDestination.Privacy`
+- 完善 `core:permission` 的权限状态检查、权限声明和请求协议。
+- 新增 `feature:permission`。
+- 提供权限总览页和权限申请页。
+- 让 `StartupCoordinator` 在隐私协议通过后，根据权限配置和状态决定是否进入 `StartupDestination.PermissionOverview` 或后续流程。
 
-开始改动前应重新检查 `docs/codex_Goal.md` 中阶段 7 的要求，并确认当前代码仍以 `f7ed72c` 之后的状态为基础。
+开始改动前应重新检查 `docs/codex_Goal.md` 中阶段 8 的要求，并确认当前代码仍以隐私 gate 提交之后的状态为基础。

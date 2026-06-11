@@ -78,12 +78,14 @@ include(
     ":core:navigation",
     ":core:network",
     ":core:permission",
+    ":core:privacy",
     ":core:settings",
     ":core:startup",
     ":core:storage",
     ":core:ui",
     ":feature:home",
     ":feature:main",
+    ":feature:privacy",
     ":feature:settings",
 )
 

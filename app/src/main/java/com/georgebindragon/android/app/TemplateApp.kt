@@ -24,6 +24,7 @@ import com.georgebindragon.android.core.startup.StartupDestination
 import com.georgebindragon.android.core.ui.focus.ProvideAppInteractionMode
 import com.georgebindragon.android.feature.home.homeScreen
 import com.georgebindragon.android.feature.main.MainShellRoute
+import com.georgebindragon.android.feature.privacy.privacyScreen
 import com.georgebindragon.android.feature.settings.settingsScreen
 
 @Composable
@@ -70,9 +71,19 @@ fun TemplateApp(
                     },
                 )
             }
-            composable(StartupNavigationRoute.Privacy) {
-                Text(text = "隐私协议")
-            }
+            privacyScreen(
+                privacyConfig = appConfig.privacy,
+                privacyRepository = AppDependencies.privacyRepository,
+                onAccepted = {
+                    rootNavController.navigate(RootRoute.Main) {
+                        popUpTo(StartupNavigationRoute.Privacy) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                onRejected = onExitClick,
+            )
             composable(StartupNavigationRoute.PermissionOverview) {
                 Text(text = "权限总览")
             }
