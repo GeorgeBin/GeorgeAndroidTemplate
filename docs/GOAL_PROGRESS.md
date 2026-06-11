@@ -201,6 +201,19 @@
   - `RootShellExecutor`
   - `PrivilegedSystemExecutor`
 - `core:system` 默认普通 App 环境下所有能力返回不可用，Root、静默安装、系统权限和特权执行入口均先做 capability check。
+- 完善 `core:ui` 常用 Compose 组件：
+  - `GroupList`
+  - `TemplateTopBar`
+  - `TemplateTab`
+  - `TemplatePager`
+  - `SearchListPage`
+  - `SearchTreePage`
+  - `StickyHeaderList`
+  - `MarqueeText`
+  - `FocusableMarqueeText`
+  - `StatusPage`
+  - `FormPage`
+  - `EmptyErrorLoading`
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
@@ -211,7 +224,7 @@
 - 彻底删除 `AppDependencies`
 - `feature:system-debug`
 - `feature:update`
-- 后续 UI 能力完善，包括通用列表、状态页、DialogHost、ToastBridge、跑马灯文字等
+- 后续 UI 能力继续完善，包括 DialogHost、ToastBridge 和现有组件在 feature 中的逐步复用
 - 真实业务模块插件化示例
 - Hilt、Repository、UDF/MVI-like 状态流的全面落地
 
@@ -419,6 +432,24 @@ core/system/src/test/java/com/georgebindragon/android/core/system/SystemCapabili
 docs/GOAL_PROGRESS.md
 docs/architecture.md
 settings.gradle.kts
+```
+
+阶段 17 当前改动涉及文件：
+
+```text
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/EmptyErrorLoading.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/FormPage.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/GroupList.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/MarqueeText.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/SearchListPage.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/SearchTreePage.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/StatusPage.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/StickyHeaderList.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/TemplatePager.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/TemplateTab.kt
+core/ui/src/main/java/com/georgebindragon/android/core/ui/component/TemplateTopBar.kt
+docs/GOAL_PROGRESS.md
+docs/architecture.md
 ```
 
 ## 5. 已运行的验证命令及结果
@@ -673,6 +704,22 @@ Hilt 接入阶段单元测试验证，已通过：
 
 结果：成功。
 
+UI 组件完善阶段核心验证，已通过：
+
+```bash
+./gradlew :core:ui:compileDebugKotlin --no-daemon
+```
+
+结果：成功。
+
+UI 组件完善阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
@@ -688,7 +735,7 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，如果阶段 16 已提交，则继续阶段 17：UI 组件完善；如果阶段 16 尚未提交，则先运行阶段验收命令并提交：
+确认工作区状态后，如果阶段 17 已提交，则继续阶段 18：诊断与调试页面；如果阶段 17 尚未提交，则先运行阶段验收命令并提交：
 
 ```bash
 ./gradlew assembleDebug --no-daemon

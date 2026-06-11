@@ -52,7 +52,7 @@ app -> feature -> core -> base
 - `base:common`：纯 Kotlin 通用工具，例如时间、集合、字符串、纯 Kotlin 防抖器。
 - `base:coroutine`：协程调度器、Flow 工具、协程错误处理等通用能力。
 - `base:json`：JSON 序列化工具和基础适配。
-- `base:system`：系统工具类。只放系统签名、系统应用、Root 权限或特殊设备环境下才能使用的能力，并在 API 命名和文档中明确权限前置条件。
+- `core:system`：系统特权能力。只放系统签名、系统应用、Root 权限或特殊设备环境下才能使用的能力，并在 API 命名和文档中明确权限前置条件。
 
 `base` 应避免出现业务名词、页面概念、主题样式和 App 设置状态。
 
@@ -109,7 +109,7 @@ feature 内部可以包含 screen、route、ViewModel、UI state 和该功能私
 | 语言切换能力 | `core:locale` | App 级共享能力 |
 | 平板、横竖屏、折叠屏、WindowSizeClass 判断 | `core:adaptive` | App 级适配判断；具体页面布局放各 `feature` |
 | 按键、遥控器、D-Pad 抽象 | `core:input` | 跨页面输入协议 |
-| 系统签名或 Root 才能调用的工具 | `base:system` | 底层能力，但必须明确权限边界 |
+| 系统签名或 Root 才能调用的工具 | `core:system` | 底层能力，但必须明确权限边界 |
 
 ## 持久化分层
 
@@ -202,7 +202,7 @@ App 级状态按生命周期语义分为三类：
 - `:core:time`：App 级时间能力接口，当前提供系统时间、开机时长、时区、日期和时分秒状态流；NTP、HTTP 和私有校准源后续再接入。
 - `:core:timer`：共享定时器接口骨架，当前按相同 interval 复用 ticker，并在无订阅者时停止上游。
 - `:core:update`：更新检查、下载、安装和状态模型接口骨架。
-- `:core:ui`：通用 Compose 组件、Modifier、焦点和输入相关 UI 能力。
+- `:core:ui`：通用 Compose 组件、Modifier、焦点和输入相关 UI 能力；当前提供分组列表、顶部栏、Tab、Pager、搜索列表/树、粘性标题列表、跑马灯文本、状态页、表单页和空/错/加载状态容器。
 - `:feature:auth`：登录 gate 页面，提供账号密码登录、游客模式入口和登录成功跳转。
 - `:feature:home`：首页 feature。
 - `:feature:main`：主页面壳和可配置底部 Tab 展示，不直接依赖具体业务 feature。
@@ -217,7 +217,7 @@ App 级状态按生命周期语义分为三类：
 - 后续扩展 `:core:time` 的 NTP、HTTP 或私有接口校准策略时，应保持校准来源和失败原因显式建模。
 - 主题和 AppScale 选择继续由 `:core:settings` 管理，后续需要跨进程或冷启动恢复时再补充持久化协议。
 - 具体页面布局策略由各 feature 自己实现，`core:adaptive` 只提供响应式判断能力。
-- 需要系统签名、系统应用或 Root 能力时，新增 `:base:system`，并为每个 API 标明权限前置条件和失败行为。
+- 需要系统签名、系统应用或 Root 能力时，通过 `:core:system` 暴露 capability-first 接口，并为每个 API 标明权限前置条件和失败行为。
 - `:core:database` 先不启用 Room 插件和依赖，等出现真实数据库 schema、DAO 或迁移需求时再接入。
 
 `core:network` 演进规则：
