@@ -204,11 +204,14 @@ App 级状态按生命周期语义分为三类：
 - `:core:update`：更新检查、下载、安装和状态模型接口骨架。
 - `:core:ui`：通用 Compose 组件、Modifier、焦点和输入相关 UI 能力；当前提供分组列表、顶部栏、Tab、Pager、搜索列表/树、粘性标题列表、跑马灯文本、状态页、表单页和空/错/加载状态容器。
 - `:feature:auth`：登录 gate 页面，提供账号密码登录、游客模式入口和登录成功跳转。
+- `:feature:diagnostics`：可选诊断总览页面，展示权限、启动来源、前后台状态，并提供 Shell / Ping 测试 UI 边界；当前不作为 app 正式依赖。
 - `:feature:home`：首页 feature。
 - `:feature:main`：主页面壳和可配置底部 Tab 展示，不直接依赖具体业务 feature。
 - `:feature:permission`：权限总览和权限申请 gate 页面，支持普通权限申请、特殊权限设置跳转和可选权限跳过。
 - `:feature:privacy`：隐私协议 gate 页面，提供同意和不同意入口。
 - `:feature:settings`：设置页面起点，当前根据 `SettingsFeatureConfig` 显示语言、主题、字号、方向、专家模式、权限、隐私、关于、退出登录和重启入口；具体跨 feature 跳转由 `app` 组装层协调。
+- `:feature:system-debug`：可选系统能力检测页面，展示 `core:system` capability 状态；当前不作为 app 正式依赖。
+- `:feature:time-debug`：可选时间状态页面，展示 `core:time` 当前状态；当前不作为 app 正式依赖。
 
 建议后续按需求逐步补充具体实现，不提前创建业务 API 或示例实现：
 

@@ -214,6 +214,11 @@
   - `StatusPage`
   - `FormPage`
   - `EmptyErrorLoading`
+- 新增可选诊断与调试页面模块：
+  - `feature:diagnostics`：诊断入口、权限状态、启动来源、前后台状态、Shell / Ping 测试 UI
+  - `feature:time-debug`：时间状态页面
+  - `feature:system-debug`：系统能力检测页面
+- `feature:diagnostics`、`feature:time-debug`、`feature:system-debug` 已 include 到 Gradle，但未加入 `app` 依赖，保持可包含或不包含。
 - 更新 `docs/architecture.md`，同步当前模块状态和下一步演进说明。
 
 ## 3. 未完成内容
@@ -222,7 +227,6 @@
 
 - feature ViewModel 的 `@HiltViewModel` 迁移
 - 彻底删除 `AppDependencies`
-- `feature:system-debug`
 - `feature:update`
 - 后续 UI 能力继续完善，包括 DialogHost、ToastBridge 和现有组件在 feature 中的逐步复用
 - 真实业务模块插件化示例
@@ -450,6 +454,23 @@ core/ui/src/main/java/com/georgebindragon/android/core/ui/component/TemplateTab.
 core/ui/src/main/java/com/georgebindragon/android/core/ui/component/TemplateTopBar.kt
 docs/GOAL_PROGRESS.md
 docs/architecture.md
+```
+
+阶段 18 当前改动涉及文件：
+
+```text
+feature/diagnostics/build.gradle.kts
+feature/diagnostics/src/main/AndroidManifest.xml
+feature/diagnostics/src/main/java/com/georgebindragon/android/feature/diagnostics/DiagnosticsScreen.kt
+feature/system-debug/build.gradle.kts
+feature/system-debug/src/main/AndroidManifest.xml
+feature/system-debug/src/main/java/com/georgebindragon/android/feature/systemdebug/SystemDebugScreen.kt
+feature/time-debug/build.gradle.kts
+feature/time-debug/src/main/AndroidManifest.xml
+feature/time-debug/src/main/java/com/georgebindragon/android/feature/timedebug/TimeDebugScreen.kt
+docs/GOAL_PROGRESS.md
+docs/architecture.md
+settings.gradle.kts
 ```
 
 ## 5. 已运行的验证命令及结果
@@ -720,11 +741,27 @@ UI 组件完善阶段验收构建，已通过：
 
 结果：成功。
 
+诊断与调试页面阶段核心验证，已通过：
+
+```bash
+./gradlew :feature:diagnostics:compileDebugKotlin :feature:time-debug:compileDebugKotlin :feature:system-debug:compileDebugKotlin --no-daemon
+```
+
+结果：成功。
+
+诊断与调试页面阶段验收构建，已通过：
+
+```bash
+./gradlew assembleDebug --no-daemon
+```
+
+结果：成功。
+
 ## 6. 当前阻塞点
 
 无技术阻塞。
 
-当前 goal 未完成，不应标记为 complete。
+阶段 1-18 已按目标文档完成并通过阶段验收；仍需执行最终验收命令后再判断 goal 是否可标记为 complete。
 
 ## 7. 下次恢复后第一步应该做什么
 
@@ -735,7 +772,7 @@ git status
 git branch --show-current
 ```
 
-确认工作区状态后，如果阶段 17 已提交，则继续阶段 18：诊断与调试页面；如果阶段 17 尚未提交，则先运行阶段验收命令并提交：
+确认工作区状态后，如果阶段 18 已提交，则执行最终验收；如果阶段 18 尚未提交，则先运行阶段验收命令并提交：
 
 ```bash
 ./gradlew assembleDebug --no-daemon

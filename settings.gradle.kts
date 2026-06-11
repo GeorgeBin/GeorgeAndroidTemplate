@@ -99,10 +99,13 @@ include(
     ":core:ui",
     ":feature:home",
     ":feature:auth",
+    ":feature:diagnostics",
     ":feature:main",
     ":feature:permission",
     ":feature:privacy",
     ":feature:settings",
+    ":feature:system-debug",
+    ":feature:time-debug",
 )
 
 
