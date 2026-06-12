@@ -101,6 +101,7 @@ include(
     ":feature:auth",
     ":feature:diagnostics",
     ":feature:main",
+    ":feature:message",
     ":feature:permission",
     ":feature:privacy",
     ":feature:settings",

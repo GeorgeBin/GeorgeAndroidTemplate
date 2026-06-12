@@ -10,9 +10,6 @@ import com.georgebindragon.android.core.appconfig.TabConfig
 fun MainShellRoute(
     tabs: List<TabConfig>,
     selectedRoute: String?,
-    appName: String,
-    packageName: String,
-    versionName: String,
     onTabClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
@@ -25,12 +22,10 @@ fun MainShellRoute(
                 MainTabState(
                     route = tab.route,
                     title = tab.title.resolve(),
+                    icon = tab.icon,
                     selected = tab.route == selectedRoute,
                 )
             },
-        appName = appName,
-        packageName = packageName,
-        versionName = versionName,
         onTabClick = onTabClick,
         modifier = modifier,
         content = content,

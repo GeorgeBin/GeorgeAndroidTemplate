@@ -26,10 +26,12 @@ import com.georgebindragon.android.core.settings.PageOrientation
 import com.georgebindragon.android.core.settings.ThemeMode
 import com.georgebindragon.android.core.startup.StartupDestination
 import com.georgebindragon.android.core.startup.StartupCoordinator
+import com.georgebindragon.android.core.ui.component.StatusPage
 import com.georgebindragon.android.core.ui.focus.ProvideAppInteractionMode
 import com.georgebindragon.android.feature.auth.loginScreen
 import com.georgebindragon.android.feature.home.homeScreen
 import com.georgebindragon.android.feature.main.MainShellRoute
+import com.georgebindragon.android.feature.message.messageScreen
 import com.georgebindragon.android.feature.permission.permissionOverviewScreen
 import com.georgebindragon.android.feature.permission.permissionRequestScreen
 import com.georgebindragon.android.feature.privacy.privacyScreen
@@ -144,9 +146,6 @@ fun TemplateApp(
             composable(RootRoute.Main) {
                 MainGraph(
                     appConfig = appConfig,
-                    appName = appName,
-                    packageName = packageName,
-                    versionName = versionName,
                     themeMode = themeMode,
                     onThemeModeChange = onThemeModeChange,
                     appScale = appScale,
@@ -199,9 +198,6 @@ private fun StartupDestination.toRoute(): String = when (this) {
 @Composable
 private fun MainGraph(
     appConfig: AppConfig,
-    appName: String,
-    packageName: String,
-    versionName: String,
     themeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
     appScale: AppScale,
@@ -234,9 +230,6 @@ private fun MainGraph(
     MainShellRoute(
         tabs = visibleTabs,
         selectedRoute = selectedRoute,
-        appName = appName,
-        packageName = packageName,
-        versionName = versionName,
         onTabClick = { route ->
             mainNavController.navigate(route) {
                 popUpTo(mainNavController.graph.findStartDestination().id) {
@@ -257,6 +250,10 @@ private fun MainGraph(
                 onExitClick = onExitClick,
                 onRestartClick = onRestartClick,
             )
+            messageScreen()
+            composable(MainRoute.Workbench) {
+                MainPlaceholderPage(title = "工作台")
+            }
             settingsScreen(
                 settingsConfig = appConfig.settings,
                 themeMode = themeMode,
@@ -289,4 +286,9 @@ private fun MainGraph(
             )
         }
     }
+}
+
+@Composable
+private fun MainPlaceholderPage(title: String) {
+    StatusPage(title = title)
 }

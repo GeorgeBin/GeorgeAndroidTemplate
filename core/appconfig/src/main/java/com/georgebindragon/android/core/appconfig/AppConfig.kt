@@ -86,10 +86,22 @@ val DefaultTabs: List<TabConfig> = listOf(
         order = 0,
     ),
     TabConfig(
+        route = "message",
+        title = UiText.Plain("消息"),
+        icon = AppIcon.Message,
+        order = 10,
+    ),
+    TabConfig(
+        route = "workbench",
+        title = UiText.Plain("工作台"),
+        icon = AppIcon.Workbench,
+        order = 20,
+    ),
+    TabConfig(
         route = "settings",
         title = UiText.Plain("设置"),
         icon = AppIcon.Settings,
-        order = 10,
+        order = 30,
     ),
 )
 

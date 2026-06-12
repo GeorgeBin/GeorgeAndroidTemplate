@@ -10,9 +10,6 @@ import com.georgebindragon.android.core.navigation.MainRoute
 fun NavGraphBuilder.mainShellScreen(
     tabs: List<TabConfig>,
     selectedRoute: String?,
-    appName: String,
-    packageName: String,
-    versionName: String,
     onTabClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
@@ -21,9 +18,6 @@ fun NavGraphBuilder.mainShellScreen(
         MainShellRoute(
             tabs = tabs,
             selectedRoute = selectedRoute,
-            appName = appName,
-            packageName = packageName,
-            versionName = versionName,
             onTabClick = onTabClick,
             modifier = modifier,
             content = content,

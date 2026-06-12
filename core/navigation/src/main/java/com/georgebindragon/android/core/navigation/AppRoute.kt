@@ -15,5 +15,7 @@ object StartupRoute {
 object MainRoute {
     const val Shell = "main/shell"
     const val Home = "home"
+    const val Message = "message"
+    const val Workbench = "workbench"
     const val Settings = "settings"
 }
